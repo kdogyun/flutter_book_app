@@ -8,15 +8,26 @@ class User {
 
   User.fromJson(Map<String, dynamic> parsedJson) {
     print(parsedJson['results'].length);
-    _page = parsedJson['page'];
-    _total_results = parsedJson['total_results'];
-    _total_pages = parsedJson['total_pages'];
-    List<_Result> temp = [];
-    for (int i = 0; i < parsedJson['results'].length; i++) {
-      _Result result = _Result(parsedJson['results'][i]);
+    _b_name = parsedJson['phone'];
+    _b_name = parsedJson['b_name'];
+    _b_item = parsedJson['b_item'];
+    _b_area = parsedJson['b_area'];
+    _upgrade = parsedJson['upgrade'];
+    _created_at = parsedJson['created_at'];
+    _updated_at = parsedJson['updated_at'];
+    List<_Menu> temp = [];
+    for (int i = 0; i < parsedJson['menus'].length; i++) {
+      _Menu result = _Menu(parsedJson['menus'][i]);
       temp.add(result);
     }
-    _results = temp;
+    _menus = temp;
+
+    List<_Category> temp2 = [];
+    for (int i = 0; i < parsedJson['menus'].length; i++) {
+      _Category result = _Category(parsedJson['categories'][i]);
+      temp2.add(result);
+    }
+    _categories = temp2;
   }
 
   List<_Menu> get menus => _menus;
@@ -38,114 +49,28 @@ class _Menu {
   String _name, _category;
   int _price;
 
-  _Result(result) {
-    _vote_count = result['vote_count'];
-    _id = result['id'];
-    _video = result['video'];
-    _vote_average = result['vote_average'];
-    _title = result['title'];
-    _popularity = result['popularity'];
-    _poster_path = result['poster_path'];
-    _original_language = result['original_language'];
-    _original_title = result['original_title'];
-    for (int i = 0; i < result['genre_ids'].length; i++) {
-      _genre_ids.add(result['genre_ids'][i]);
-    }
-    _backdrop_path = result['backdrop_path'];
-    _adult = result['adult'];
-    _overview = result['overview'];
-    _release_date = result['release_date'];
+  _Menu(result) {
+    _name = result['name'];
+    _category = result['category'];
+    _price = result['price'];
   }
 
-  String get release_date => _release_date;
+  String get name => _name;
+  String get category => _category;
 
-  String get overview => _overview;
-
-  bool get adult => _adult;
-
-  String get backdrop_path => _backdrop_path;
-
-  List<int> get genre_ids => _genre_ids;
-
-  String get original_title => _original_title;
-
-  String get original_language => _original_language;
-
-  String get poster_path => _poster_path;
-
-  double get popularity => _popularity;
-
-  String get title => _title;
-
-  double get vote_average => _vote_average;
-
-  bool get video => _video;
-
-  int get id => _id;
-
-  int get vote_count => _vote_count;
+  int get price => _price;
 }
 
 class _Category {
-  int _vote_count;
-  int _id;
-  bool _video;
-  var _vote_average;
-  String _title;
-  double _popularity;
-  String _poster_path;
-  String _original_language;
-  String _original_title;
-  List<int> _genre_ids = [];
-  String _backdrop_path;
-  bool _adult;
-  String _overview;
-  String _release_date;
+  String _name;
+  int _order;
 
-  _Result(result) {
-    _vote_count = result['vote_count'];
-    _id = result['id'];
-    _video = result['video'];
-    _vote_average = result['vote_average'];
-    _title = result['title'];
-    _popularity = result['popularity'];
-    _poster_path = result['poster_path'];
-    _original_language = result['original_language'];
-    _original_title = result['original_title'];
-    for (int i = 0; i < result['genre_ids'].length; i++) {
-      _genre_ids.add(result['genre_ids'][i]);
-    }
-    _backdrop_path = result['backdrop_path'];
-    _adult = result['adult'];
-    _overview = result['overview'];
-    _release_date = result['release_date'];
+  _Category(result) {
+    _name = result['name'];
+    _order = result['order'];
   }
 
-  String get release_date => _release_date;
+  String get name => _name;
 
-  String get overview => _overview;
-
-  bool get adult => _adult;
-
-  String get backdrop_path => _backdrop_path;
-
-  List<int> get genre_ids => _genre_ids;
-
-  String get original_title => _original_title;
-
-  String get original_language => _original_language;
-
-  String get poster_path => _poster_path;
-
-  double get popularity => _popularity;
-
-  String get title => _title;
-
-  double get vote_average => _vote_average;
-
-  bool get video => _video;
-
-  int get id => _id;
-
-  int get vote_count => _vote_count;
+  int get order => _order;
 }
