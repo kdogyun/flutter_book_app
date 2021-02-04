@@ -1,24 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'firestore_provider.dart';
+import 'package:inject/inject.dart';
 
 class Repository {
-  final _firestoreProvider = FirestoreProvider();
+  final FirestoreProvider firestoreProvider;
 
-  Future<int> authenticateUser(String email, String password) =>
-      _firestoreProvider.authenticateUser(email, password);
+  @provide
+  Repository(this.firestoreProvider);
 
-  Future<void> registerUser(String email, String password) =>
-      _firestoreProvider.registerUser(email, password);
-
-  Future<void> uploadGoal(String email, String title, String goal) =>
-      _firestoreProvider.uploadGoal(title, email, goal);
-
-  Stream<DocumentSnapshot> myGoalList(String email) =>
-      _firestoreProvider.myGoalList(email);
-
-  Stream<QuerySnapshot> othersGoalList() => _firestoreProvider.othersGoalList();
-
-  void removeGoal(String title, email) =>
-      _firestoreProvider.removeGoal(title, email);
+  Future<Map<String, dynamic>> checkVersion() =>
+      firestoreProvider.checkVersion();
 }
