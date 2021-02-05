@@ -1,0 +1,3 @@
+[submodule "pos_test/injection/inject.dart"]
+	path = pos_test/injection/inject.dart
+	url = https://github.com/google/inject.dart

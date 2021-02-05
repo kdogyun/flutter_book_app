@@ -45,8 +45,6 @@ dependencies:
   # https://pub.dev/packages/cloud_firestore  
   hive: ^1.4.4+1
   # https://pub.dev/packages/hive
-  injectable: ^1.0.7
-  # https://pub.dev/packages/injectable
 
 
 dev_dependencies:
