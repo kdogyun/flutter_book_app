@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'ui/login.dart';
+import 'package:pos/src/utils/strings.dart';
 import 'blocs/login_bloc_provider.dart';
+import 'ui/login.dart';
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return LoginBlocProvider(
-      child: MaterialApp(
-        theme: ThemeData(
-          accentColor: Colors.black,
-          primaryColor: Colors.amber,
-        ),
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              "Goals",
-              style: TextStyle(color: Colors.black),
-            ),
-            backgroundColor: Colors.amber,
-            elevation: 0.0,
+    print('앱');
+    return MaterialApp(
+      theme: ThemeData(
+        accentColor: Colors.red,
+        primaryColor: Colors.white,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            StringConstant.domain,
+            style: TextStyle(color: Color.fromRGBO(224, 15, 26, .99)),
           ),
-          body: LoginScreen(),
+          backgroundColor: Colors.red[50],
+          elevation: 0.0,
         ),
+        body: LoginBlocProvider(child: LoginScreen()),
       ),
     );
   }
