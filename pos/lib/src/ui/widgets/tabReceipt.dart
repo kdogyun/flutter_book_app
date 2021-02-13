@@ -38,8 +38,10 @@ class _ReceiptState extends State<ReceiptScreen> {
           stream: _bloc.getUser(widget._phone),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            final a = User.fromJson(snapshot.data.data());
-            return Text('영수증: ' + a.bArea);
+            if (snapshot.hasData)
+              return Text('영수증: ' + User.fromJson(snapshot.data.data()).bArea);
+            else
+              return CircularProgressIndicator();
           }),
     );
   }

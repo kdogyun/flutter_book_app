@@ -22,7 +22,6 @@ class TabMainState extends State<TabMain> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    print(widget._phone);
     _tabController = TabController(length: 4, vsync: this, initialIndex: 1);
     _tabController.addListener(_handleTabIndex);
   }
@@ -41,35 +40,32 @@ class TabMainState extends State<TabMain> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text(widget._name + ' / ' + widget._phone),
+      appBar: AppBar(
+        title: Text(
+          widget._name + ' with ' + StringConstant.domain,
+          style: TextStyle(color: Color.fromRGBO(224, 15, 26, .99)),
+        ),
+        backgroundColor: Colors.red[50],
+        elevation: 0.0,
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: <Tab>[
+            Tab(text: StringConstant.tabReceipt),
+            Tab(text: StringConstant.tabCal),
+            Tab(text: StringConstant.tabStats),
+            Tab(text: StringConstant.tabSetting),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          ReceiptScreen(widget._phone),
+          CalScreen(widget._phone),
+          StatsScreen(widget._phone),
+          SettingScreen(widget._phone),
+        ],
+      ),
     );
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text(
-    //       widget._name + ' with ' + StringConstant.domain,
-    //       style: TextStyle(color: Color.fromRGBO(224, 15, 26, .99)),
-    //     ),
-    //     backgroundColor: Colors.red[50],
-    //     elevation: 0.0,
-    //     bottom: TabBar(
-    //       controller: _tabController,
-    //       tabs: <Tab>[
-    //         Tab(text: StringConstant.tabReceipt),
-    //         Tab(text: StringConstant.tabCal),
-    //         Tab(text: StringConstant.tabStats),
-    //         Tab(text: StringConstant.tabSetting),
-    //       ],
-    //     ),
-    //   ),
-    //   body: TabBarView(
-    //     controller: _tabController,
-    //     children: <Widget>[
-    //       ReceiptScreen(widget._phone),
-    //       CalScreen(widget._phone),
-    //       StatsScreen(widget._phone),
-    //       SettingScreen(widget._phone),
-    //     ],
-    //   ),
-    // );
   }
 }

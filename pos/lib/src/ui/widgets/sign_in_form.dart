@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/blocs/login_bloc.dart';
 import 'package:pos/src/blocs/login_bloc_provider.dart';
-import 'package:pos/src/ui/do_main.dart';
-import 'package:pos/src/ui/widgets/tabMain.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../tabMain.dart';
 
 class SignInForm extends StatefulWidget {
   @override

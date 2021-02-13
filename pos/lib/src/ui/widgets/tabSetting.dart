@@ -38,8 +38,10 @@ class _SettingState extends State<SettingScreen> {
           stream: _bloc.getUser(widget._phone),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            final a = User.fromJson(snapshot.data.data());
-            return Text('셋팅: ' + a.bItem);
+            if (snapshot.hasData)
+              return Text('셋팅: ' + User.fromJson(snapshot.data.data()).bItem);
+            else
+              return CircularProgressIndicator();
           }),
     );
   }

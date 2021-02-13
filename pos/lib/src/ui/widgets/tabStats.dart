@@ -38,8 +38,11 @@ class _StatsState extends State<StatsScreen> {
           stream: _bloc.getUser(widget._phone),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            final a = User.fromJson(snapshot.data.data());
-            return Text('통계: ' + a.categories.toString());
+            if (snapshot.hasData)
+              return Text('통계: ' +
+                  User.fromJson(snapshot.data.data()).categories.toString());
+            else
+              return CircularProgressIndicator();
           }),
     );
   }
