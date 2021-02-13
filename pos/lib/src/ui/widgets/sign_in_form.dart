@@ -4,6 +4,7 @@ import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/blocs/login_bloc.dart';
 import 'package:pos/src/blocs/login_bloc_provider.dart';
 import 'package:pos/src/ui/do_main.dart';
+import 'package:pos/src/ui/widgets/tabMain.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,7 +46,6 @@ class SignInFormState extends State<SignInForm> {
   @override
   void initState() {
     super.initState();
-    print('사인폼');
     _loadPhone();
   }
 
@@ -63,60 +63,78 @@ class SignInFormState extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
+    // https://stackoverflow.com/questions/51216448/is-there-any-callback-to-tell-me-when-build-function-is-done-in-flutter
+    if (_phone != null)
+      WidgetsBinding.instance
+        ..addPostFrameCallback((_) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DoBlocProvider(child: TabMain(_phone, _name))),
+          );
+        });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         FutureBuilder<Map<String, dynamic>>(
-          future: _bloc.checkVersion(),
-          // ignore: missing_return
-          builder: (context, snapshot) {
-            if (snapshot.hasData &&
-                snapshot.data['version'] != StringConstant.version) {
-              print('버전이 다름');
-              //버전이 다를 때
-              return AlertDialog(
-                title: Text('버전 에러'),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('버전이 다릅니다.'),
-                      Text('업데이트를 해주세요.'),
-                      Text('하지않을 경우, 이용이 불가능합니다.')
-                    ],
+            future: _bloc.checkVersion(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.data['version'] != StringConstant.version) {
+                //버전이 다를 때
+                return AlertDialog(
+                  title: Text('버전 에러'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('버전이 다릅니다.'),
+                        Text('업데이트를 해주세요.'),
+                        Text('하지않을 경우, 이용이 불가능합니다.')
+                      ],
+                    ),
                   ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('업데이트'),
-                    onPressed: () async {
-                      const url = 'https://flutter.dev';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch $url';
-                      }
-                    },
-                  ),
-                  FlatButton(
-                      child: Text('종료'),
-                      onPressed: () => {
-                            Navigator.pop(context, true),
-                            SystemNavigator.pop(), // 앱종료
-                            SystemChannels.platform
-                                .invokeMethod('SystemNavigator.pop'),
-                            //exit(0) //강제종료
-                          }),
-                ],
-              );
-            } else {
-              // 기존 로그인이 있을 경우
-              if (_phone != null) {
-                return doMain();
-              }
-              // 기존 로그인이 없어서 새로 가입하거나 로그인을 다시 해야하는 경우
-              // 기본적으로 로그인창이 먼저 뜬다.
-              else {
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('업데이트'),
+                      onPressed: () async {
+                        const url = 'https://flutter.dev';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
+                    ),
+                    FlatButton(
+                        child: Text('종료'),
+                        onPressed: () => {
+                              Navigator.pop(context, true),
+                              SystemNavigator.pop(), // 앱종료
+                              SystemChannels.platform
+                                  .invokeMethod('SystemNavigator.pop'),
+                              //exit(0) //강제종료
+                            }),
+                  ],
+                );
+              } else {
+                //   // 기존 로그인이 있을 경우
+                //   if (_phone != null) {
+                //     WidgetsBinding.instance..addPostFrameCallback((_) {
+                //       Navigator.pushReplacement(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) =>
+                //                 DoBlocProvider(child: TabMain(_phone, _name))),
+                //       );
+                //     });
+                //     return CircularProgressIndicator();
+                //   }
+                // 기존 로그인이 없어서 새로 가입하거나 로그인을 다시 해야하는 경우
+                // 기본적으로 로그인창이 먼저 뜬다.
+                // else {
                 return Center(
                     // child: CircularProgressIndicator(),
                     child: StreamBuilder<bool>(
@@ -128,8 +146,8 @@ class SignInFormState extends State<SignInForm> {
                 ));
               }
             }
-          },
-        ),
+            // },
+            ),
       ],
     );
   }
@@ -346,39 +364,36 @@ class SignInFormState extends State<SignInForm> {
     controller2.text = '';
   }
 
-  void authenticateUser() {
+  Future<void> authenticateUser() async {
     _bloc.showProgressBar(true);
     if (doLogin) {
       // 로그인
       // 정상 로그인 1, 아이디(폰번) 없음 0, 비번(상호명) 틀림 -1
-      _bloc.login().then((value) {
-        if (value == 1) {
+      switch (await _bloc.login()) {
+        case 1:
           _savePhone(controller1.text, controller2.text);
-          print('로그인');
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => doMain()),
-          );
-        } else if (value == 0) {
+          break;
+        case 0:
           // 아이디(폰번) 없음,
           showErrorMessage(StringConstant.failID);
-        } else if (value == -1) {
+          break;
+        case -1:
           // 비번(상호명) 틀림
           showErrorMessage(StringConstant.failPW);
-        }
-      });
+          break;
+      }
     } else {
       // 회원가입
       // 정상가입 1, 폰번호 중복 -1
-      _bloc.registerUser().then((value) {
-        if (value == 1) {
+      switch (await _bloc.registerUser()) {
+        case 1:
           _savePhone(controller1.text, controller2.text);
-          return doMain();
-        } else if (value == -1) {
+          break;
+
+        case -1:
           // 폰번호 중복
           showErrorMessage(StringConstant.duplicatePhone);
-        }
-      });
+      }
     }
     _bloc.showProgressBar(false);
   }
@@ -387,9 +402,5 @@ class SignInFormState extends State<SignInForm> {
     final snackbar =
         SnackBar(content: Text(str), duration: new Duration(seconds: 2));
     Scaffold.of(context).showSnackBar(snackbar);
-  }
-
-  Widget doMain() {
-    return Scaffold(body: DoBlocProvider(child: DoMainScreen(_phone, _name)));
   }
 }

@@ -8,7 +8,6 @@ class DoMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('두스크린');
     return TabMain(_phone, _name);
   }
 }

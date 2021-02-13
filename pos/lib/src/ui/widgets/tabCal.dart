@@ -32,7 +32,6 @@ class _CarState extends State<CalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('칼탭');
     return Container(
       alignment: Alignment(0.0, 0.0),
       child: StreamBuilder(

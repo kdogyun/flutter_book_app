@@ -67,7 +67,6 @@ class LoginBloc extends BlocBase {
   }
 
   void dispose() async {
-    print('login bloc dispose');
     await _phone.drain();
     _phone.close();
     await _name.drain();

@@ -10,7 +10,6 @@ class DoBlocProvider extends InheritedWidget {
   bool updateShouldNotify(_) => true;
 
   static DoBloc of(BuildContext context) {
-    print('두블록');
     return context.dependOnInheritedWidgetOfExactType<DoBlocProvider>().bloc;
   }
 }

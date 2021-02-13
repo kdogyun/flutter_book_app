@@ -40,9 +40,8 @@ class TabMainState extends State<TabMain> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print('탭');
     return Scaffold(
-      body: Text('sdfsdfsdf'),
+      body: Text(widget._name + ' / ' + widget._phone),
     );
     // return Scaffold(
     //   appBar: AppBar(

@@ -6,7 +6,6 @@ import 'ui/login.dart';
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print('앱');
     return MaterialApp(
       theme: ThemeData(
         accentColor: Colors.red,
