@@ -26,9 +26,12 @@ class StringConstant {
   static const String spaceValidateMessage = "빈칸은 불가능합니다.";
   static const String duplicatePhone = '이미 가입된 폰번호입니다.';
 
-  // 메인화면
+  // TAB
   static const String tabStats = '통계';
   static const String tabCal = '계산';
   static const String tabSetting = '설정';
   static const String tabReceipt = '영수증';
+
+  //계산 화면
+  static const String noOrder = '주문이 없습니다.';
 }

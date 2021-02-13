@@ -22,4 +22,7 @@ class Repository {
   // 유저 정보 가져오기
   Stream<DocumentSnapshot> getUser(String phone) =>
       _firestoreProvider.getUser(phone);
+  // 영수증 정보 가져오기
+  Stream<QuerySnapshot> getReceipt(String phone) =>
+      _firestoreProvider.getReceipt(phone);
 }

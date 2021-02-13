@@ -27,10 +27,33 @@ class Content {
 
   Content(this.name, this.price, this.count, this.sum);
 
+  // https://doocong.com/flutter/dart-study2
+  Content.three(String name, int price, int count) {
+    this.name = name;
+    this.price = price;
+    this.count = count;
+    this.sum = price * count;
+  }
+
   // String get name => _name;
   // int get price => _price;
   // int get count => _count;
   // int get sum => _sum;
+
+  void up() {
+    this.count++;
+    this.sum = this.count * this.price;
+  }
+
+  bool down() {
+    this.count--;
+    this.sum = this.count * this.price;
+
+    if (this.count < 1)
+      return false;
+    else
+      return true;
+  }
 
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pos/src/ui/login.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'blocs/login_bloc_provider.dart';
-import 'ui/login.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.red[50],
           elevation: 0.0,
         ),
-        body: LoginBlocProvider(child: LoginScreen()),
+        body: LoginBlocProvider(child: SignInForm()),
       ),
     );
   }

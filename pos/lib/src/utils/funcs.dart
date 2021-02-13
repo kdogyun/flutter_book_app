@@ -1,5 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 class Funcs {
   bool isNumeric(String str) {
     if (str == null) {

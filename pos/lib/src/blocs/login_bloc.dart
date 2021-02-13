@@ -20,7 +20,6 @@ class LoginBloc extends BlocBase {
     return _repository.checkVersion();
   }
 
-  // 변수 stream 용...
   // stream.transform : 유효성 및 데이터 가공
   Stream<String> get phone => _phone.stream.transform(_validatePhone);
   Stream<String> get name => _name.stream.transform(_validateSpace);

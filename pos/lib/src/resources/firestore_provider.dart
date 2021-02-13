@@ -1,8 +1,11 @@
 // https://firebase.flutter.dev/docs/firestore/usage
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:pos/src/models/receipt.dart';
 
 class FirestoreProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<Content> order = [];
 
   // 버전 체크
   Future<Map<String, dynamic>> checkVersion() {
@@ -45,5 +48,23 @@ class FirestoreProvider {
 // 회원 정보 가져오기
   Stream<DocumentSnapshot> getUser(String phone) {
     return _firestore.collection("USER").doc(phone).snapshots();
+  }
+
+// 영수증 정보 가져오기
+  Stream<QuerySnapshot> getReceipt(String phone) {
+    // '2019-03-13 16:49:42.044'
+    print(new DateFormat('yyyy-MM-dd 00:00:00.000').format(new DateTime.now()));
+    final startAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
+        DateTime.parse(new DateFormat('yyyy-MM-dd 00:00:00.000')
+                .format(new DateTime.now()))
+            .millisecondsSinceEpoch);
+    final endAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
+        DateTime.parse(new DateFormat('yyyy-MM-dd').format(new DateTime.now()))
+            .millisecondsSinceEpoch);
+    return _firestore
+        .collection("RECEIPT")
+        .where("phone", isEqualTo: phone)
+        .orderBy('createdAt', descending: true)
+        .startAt([startAtTimestamp]).endAt([endAtTimestamp]).snapshots();
   }
 }
