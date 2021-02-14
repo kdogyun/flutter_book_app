@@ -10,9 +10,7 @@ Receipt _$ReceiptFromJson(Map<String, dynamic> json) {
   return Receipt(
     json['phone'] as String,
     json['type'] as String,
-    json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
+    Receipt._fromJson(json['createdAt'] as int),
     json['total'] as int,
     (json['contents'] as List)
         ?.map((e) =>
@@ -24,9 +22,9 @@ Receipt _$ReceiptFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ReceiptToJson(Receipt instance) => <String, dynamic>{
       'phone': instance.phone,
       'type': instance.type,
-      'createdAt': instance.createdAt?.toIso8601String(),
+      'createdAt': Receipt._toJson(instance.createdAt),
       'total': instance.total,
-      'contents': instance.contents,
+      'contents': instance.contents?.map((e) => e?.toJson())?.toList(),
     };
 
 Content _$ContentFromJson(Map<String, dynamic> json) {

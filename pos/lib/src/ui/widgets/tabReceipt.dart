@@ -4,6 +4,8 @@ import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/models/user.dart';
 
+import 'expandableReceipt.dart';
+
 class ReceiptScreen extends StatefulWidget {
   final String _phone;
 
@@ -34,15 +36,7 @@ class _ReceiptState extends State<ReceiptScreen> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      child: StreamBuilder(
-          stream: _bloc.getUser(widget._phone),
-          builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasData)
-              return Text('영수증: ' + User.fromJson(snapshot.data.data()).bArea);
-            else
-              return CircularProgressIndicator();
-          }),
+      child: ExpandableReceipt(_bloc, widget._phone),
     );
   }
 

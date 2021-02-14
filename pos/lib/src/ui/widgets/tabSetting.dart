@@ -1,8 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
-import 'package:pos/src/models/user.dart';
+import 'package:pos/src/ui/widgets/settingCategory.dart';
+import 'package:pos/src/ui/widgets/settingMenu.dart';
+import 'package:pos/src/utils/funcs.dart';
+import 'package:pos/src/utils/strings.dart';
 
 class SettingScreen extends StatefulWidget {
   final String _phone;
@@ -32,41 +34,60 @@ class _SettingState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment(0.0, 0.0),
-      child: StreamBuilder(
-          stream: _bloc.getUser(widget._phone),
-          builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasData)
-              return Text('셋팅: ' + User.fromJson(snapshot.data.data()).bItem);
-            else
-              return CircularProgressIndicator();
-          }),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        InkWell(
+            onTap: () => showMessageOrDialog(),
+            child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(4.0) //         <--- border radius here
+                      ),
+                ),
+                child: Center(child: Text(StringConstant.settingMenu)))),
+        InkWell(
+            onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return SettingCategoryScreen(widget._phone, _bloc);
+                  }),
+                ),
+            child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(4.0) //         <--- border radius here
+                      ),
+                ),
+                child: Center(child: Text(StringConstant.settingCategory)))),
+        Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(4.0) //         <--- border radius here
+                  ),
+            ),
+            child: Center(child: Text(StringConstant.settingContact))),
+      ],
     );
   }
 
-  // ListView buildList(List<Goal> goalsList) {
-  //   return ListView.separated(
-  //       separatorBuilder: (BuildContext context, int index) => Divider(),
-  //       itemCount: goalsList.length,
-  //       itemBuilder: (context, index) {
-  //         final item = goalsList[index];
-  //         return Dismissible(
-  //             key: Key(item.id.toString()),
-  //             onDismissed: (direction) {
-  //               _bloc.removeGoal(item.title, widget._emailAddress);
-  //             },
-  //             background: Container(color: Colors.red),
-  //             child: ListTile(
-  //               title: Text(
-  //                 goalsList[index].title,
-  //                 style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //               subtitle: Text(goalsList[index].message),
-  //             ));
-  //       });
-  // }
+  void showMessageOrDialog() {
+    if (0 == 0)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return SettingMenuScreen(widget._phone, _bloc);
+        }),
+      );
+    else
+      Funcs().showErrorMessage(context, StringConstant.preorderCategory);
+  }
 }

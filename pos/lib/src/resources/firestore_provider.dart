@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/src/models/receipt.dart';
+import 'package:pos/src/models/user.dart';
 
 class FirestoreProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,13 +16,13 @@ class FirestoreProvider {
   }
 
 // 정상 로그인 1, 아이디 없음 0, 비번(상호명) 틀림 -1
-  Future<int> authenticateUser(String phone, String name) async {
+  Future<int> authenticateUser(String _phone, String _name) async {
     final DocumentSnapshot result =
-        await _firestore.collection("USER").doc(phone).get();
+        await _firestore.collection("USER").doc(_phone).get();
     if (result == null || !result.exists)
       return 0;
     else {
-      if (result.data()['bName'] == name)
+      if (result.data()['bName'] == _name)
         return 1;
       else
         return -1;
@@ -31,40 +32,72 @@ class FirestoreProvider {
 // 회원가입
 // 정상가입 1, 폰번호 중복 -1
   Future<int> registerUser(
-      String phone, String bName, String bArea, String bItem) async {
+      String _phone, String _bName, String _bArea, String _bItem) async {
     final DocumentSnapshot result = await _firestore
         .collection("USER")
         // .where("phone", isEqualTo: phone)
-        .doc(phone)
+        .doc(_phone)
         .get();
     if (result.data() != null || result.exists) return -1;
     await _firestore
         .collection("USER")
-        .doc(phone)
-        .set({'phone': phone, 'bName': bName, 'bArea': bArea, 'bItem': bItem});
+        .doc(_phone)
+        .set(new User.four(_phone, _bName, _bItem, _bArea).toJson());
     return 1;
   }
 
 // 회원 정보 가져오기
-  Stream<DocumentSnapshot> getUser(String phone) {
-    return _firestore.collection("USER").doc(phone).snapshots();
+  Stream<DocumentSnapshot> getUser(String _phone) {
+    return _firestore.collection("USER").doc(_phone).snapshots();
+  }
+
+// 회원 정보 저장
+  void setUser(User _user) async {
+    print(_user.toJson());
+    return await _firestore
+        .collection("USER")
+        // .where("phone", isEqualTo: phone)
+        .doc(_user.phone)
+        .set(_user.toJson());
   }
 
 // 영수증 정보 가져오기
-  Stream<QuerySnapshot> getReceipt(String phone) {
+  Stream<QuerySnapshot> getReceipt(String _phone) {
     // '2019-03-13 16:49:42.044'
-    print(new DateFormat('yyyy-MM-dd 00:00:00.000').format(new DateTime.now()));
-    final startAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
-        DateTime.parse(new DateFormat('yyyy-MM-dd 00:00:00.000')
+    final startAtTimestamp = DateTime.parse(
+            new DateFormat('yyyy-MM-dd 00:00:00.000')
                 .format(new DateTime.now()))
-            .millisecondsSinceEpoch);
-    final endAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
-        DateTime.parse(new DateFormat('yyyy-MM-dd').format(new DateTime.now()))
-            .millisecondsSinceEpoch);
+        .millisecondsSinceEpoch;
+    final endAtTimestamp = DateTime.parse(
+            new DateFormat('yyyy-MM-dd 23:59:59.999')
+                .format(new DateTime.now()))
+        .millisecondsSinceEpoch;
     return _firestore
         .collection("RECEIPT")
-        .where("phone", isEqualTo: phone)
+        .where("phone", isEqualTo: _phone)
+        .where('createdAt', isGreaterThanOrEqualTo: startAtTimestamp)
+        .where('createdAt', isLessThanOrEqualTo: endAtTimestamp)
         .orderBy('createdAt', descending: true)
-        .startAt([startAtTimestamp]).endAt([endAtTimestamp]).snapshots();
+        .snapshots();
+    // .startAt([startAtTimestamp]).endAt([endAtTimestamp]).snapshots();
+    // startAt, endAt은 페이징...
+    // https://firebase.google.com/docs/firestore/query-data/query-cursors?hl=ko
+  }
+
+// 영수증 정보 저장하기
+  void setReceipt(Receipt _receipt) async {
+    // '2019-03-13 16:49:42.044'
+    return await _firestore
+        .collection("RECEIPT")
+        .doc('${_receipt.phone}${_receipt.createdAt.millisecondsSinceEpoch}')
+        .set(_receipt.toJson());
+  }
+
+// 영수증 정보 업데이트하기
+  void updateReceipt(Receipt _receipt) async {
+    return await _firestore
+        .collection("RECEIPT")
+        .doc('${_receipt.phone}${_receipt.createdAt.millisecondsSinceEpoch}')
+        .update(_receipt.toJson());
   }
 }

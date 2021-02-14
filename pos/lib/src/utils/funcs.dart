@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 class Funcs {
   bool isNumeric(String str) {
     if (str == null) {
@@ -12,6 +16,33 @@ class Funcs {
     else
       return true;
   }
+
+  String numComma(int price) {
+    return NumberFormat('###,###,###,###').format(price).replaceAll(' ', '');
+  }
+
+  void showErrorMessage(BuildContext context, String str) {
+    final snackbar =
+        SnackBar(content: Text(str), duration: new Duration(seconds: 2));
+    Scaffold.of(context).showSnackBar(snackbar);
+  }
+
+  // Timestamp datetimeToTimestamp(DateTime dt) {
+  //   return Timestamp.fromDate(dt);
+  //   // return Timestamp.fromMillisecondsSinceEpoch(
+  //   //     DateTime.parse(new DateFormat('yyyy-MM-dd 00:00:00.000').format(dt))
+  //   //         .millisecondsSinceEpoch);
+  // }
+
+  // DateTime timestampToDateTime(Timestamp ts) {
+  //   print(ts.toDate());
+  //   return ts.toDate();
+  //   // return DateTime.parse(ts.toDate().toString());
+  //   // return Timestamp.fromMillisecondsSinceEpoch(
+  //   //     DateTime.parse(new DateFormat('yyyy-MM-dd 00:00:00.000')
+  //   //             .format(new DateTime.now()))
+  //   //         .millisecondsSinceEpoch);
+  // }
 
   // // sharedpreference
   // //시작할 때 counter 값을 불러옵니다.

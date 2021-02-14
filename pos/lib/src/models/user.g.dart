@@ -13,12 +13,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     json['bItem'] as String,
     json['bArea'] as String,
     json['upgrade'] as bool,
-    json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
-    json['updatedAt'] == null
-        ? null
-        : DateTime.parse(json['updatedAt'] as String),
+    User._fromJson(json['createdAt'] as int),
     (json['menus'] as List)
         ?.map(
             (e) => e == null ? null : Menu.fromJson(e as Map<String, dynamic>))
@@ -36,10 +31,9 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'bItem': instance.bItem,
       'bArea': instance.bArea,
       'upgrade': instance.upgrade,
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
-      'menus': instance.menus,
-      'categories': instance.categories,
+      'createdAt': User._toJson(instance.createdAt),
+      'menus': instance.menus?.map((e) => e?.toJson())?.toList(),
+      'categories': instance.categories?.map((e) => e?.toJson())?.toList(),
     };
 
 Menu _$MenuFromJson(Map<String, dynamic> json) {

@@ -4,6 +4,7 @@ import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/blocs/login_bloc.dart';
 import 'package:pos/src/blocs/login_bloc_provider.dart';
 import 'package:pos/src/ui/tabMain.dart';
+import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,10 +27,10 @@ class SignInFormState extends State<SignInForm> {
   _loadPhone() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _phone = (prefs.getString('phone') ?? '01012341234');
-      _name = (prefs.getString('name') ?? 'plan');
-      // _phone = (prefs.getString('phone') ?? null);
-      // _name = (prefs.getString('name') ?? null);
+      // _phone = (prefs.getString('phone') ?? '01012341234');
+      // _name = (prefs.getString('name') ?? 'plan');
+      _phone = (prefs.getString('phone') ?? null);
+      _name = (prefs.getString('name') ?? null);
     });
   }
 
@@ -85,14 +86,10 @@ class SignInFormState extends State<SignInForm> {
                   snapshot.data['version'] != StringConstant.version) {
                 //버전이 다를 때
                 return AlertDialog(
-                  title: Text('버전 에러'),
+                  title: Text(StringConstant.errorVersion),
                   content: SingleChildScrollView(
                     child: ListBody(
-                      children: <Widget>[
-                        Text('버전이 다릅니다.'),
-                        Text('업데이트를 해주세요.'),
-                        Text('하지않을 경우, 이용이 불가능합니다.')
-                      ],
+                      children: <Widget>[Text(StringConstant.desVersion)],
                     ),
                   ),
                   actions: <Widget>[
@@ -140,7 +137,8 @@ class SignInFormState extends State<SignInForm> {
                   stream: _bloc.changeStatus,
                   initialData: true,
                   builder: (context, snapshot) {
-                    return snapshot.data ? login() : join();
+                    return SingleChildScrollView(
+                        child: snapshot.data ? login() : join());
                   },
                 ));
               }
@@ -152,18 +150,20 @@ class SignInFormState extends State<SignInForm> {
   }
 
   Widget login() {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: idField()),
+        idField(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
-        Expanded(child: pwField()),
+        pwField(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         Text(StringConstant.messageIDPW),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             loginButton(),
             changeDoButton(),
@@ -174,9 +174,7 @@ class SignInFormState extends State<SignInForm> {
   }
 
   Widget join() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
       children: [
         phoneField(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
@@ -190,6 +188,8 @@ class SignInFormState extends State<SignInForm> {
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             changeDoButton(),
             joinButton(),
@@ -378,11 +378,11 @@ class SignInFormState extends State<SignInForm> {
           break;
         case 0:
           // 아이디(폰번) 없음,
-          showErrorMessage(StringConstant.failID);
+          Funcs().showErrorMessage(context, StringConstant.failID);
           break;
         case -1:
           // 비번(상호명) 틀림
-          showErrorMessage(StringConstant.failPW);
+          Funcs().showErrorMessage(context, StringConstant.failPW);
           break;
       }
     } else {
@@ -395,15 +395,9 @@ class SignInFormState extends State<SignInForm> {
 
         case -1:
           // 폰번호 중복
-          showErrorMessage(StringConstant.duplicatePhone);
+          Funcs().showErrorMessage(context, StringConstant.duplicatePhone);
       }
     }
     _bloc.showProgressBar(false);
-  }
-
-  void showErrorMessage(String str) {
-    final snackbar =
-        SnackBar(content: Text(str), duration: new Duration(seconds: 2));
-    Scaffold.of(context).showSnackBar(snackbar);
   }
 }

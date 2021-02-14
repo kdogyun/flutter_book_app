@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/models/receipt.dart';
+import 'package:pos/src/models/user.dart';
+import 'package:pos/src/ui/widgets/dialogETC.dart';
 import 'package:pos/src/ui/widgets/tile_item.dart';
+import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
+
+import 'grid_menu.dart';
 
 class CalScreen extends StatefulWidget {
   final String _phone;
@@ -18,6 +24,7 @@ class CalScreen extends StatefulWidget {
 
 class _CarState extends State<CalScreen> {
   DoBloc _bloc;
+  User _user;
 
   @override
   void didChangeDependencies() {
@@ -47,14 +54,17 @@ class _CarState extends State<CalScreen> {
                     children: [
                       Expanded(
                           flex: 1,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(child: Text('::')))),
+                          child: InkWell(
+                              onTap: () => clearContent(),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(child: Text('::'))))),
                       Expanded(
                           flex: 9,
                           child: Container(
@@ -64,15 +74,25 @@ class _CarState extends State<CalScreen> {
                                         4.0) //         <--- border radius here
                                     ),
                               ),
-                              child: Center(child: Text('총액')))),
+                              child: Center(
+                                  child: StreamBuilder(
+                                      stream: _bloc.total,
+                                      builder: (context, element) {
+                                        if (element.hasData) {
+                                          if (element.data == 0)
+                                            return Text(StringConstant.noCash);
+                                          else
+                                            return Text(
+                                                Funcs().numComma(element.data));
+                                        } else
+                                          return Text(StringConstant.noCash);
+                                      })))),
                     ],
                   )),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Divider(
-                    thickness: 1,
-                    color: Colors.red,
-                  )),
+              Divider(
+                thickness: 1,
+                color: Colors.red,
+              ),
               Expanded(
                   flex: 1,
                   child: Row(
@@ -82,86 +102,145 @@ class _CarState extends State<CalScreen> {
                     children: [
                       Expanded(
                           flex: 5,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(child: Text('할인')))),
+                          child: InkWell(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      DialogETC(_bloc, true)),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.etc))))),
                       Expanded(
                           flex: 5,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(child: Text('기타')))),
+                          child: InkWell(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      DialogETC(_bloc, false)),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.discount))))),
                     ],
                   )),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Divider(
-                    thickness: 1,
-                    color: Colors.red,
-                  )),
+              // Padding(
+              //     padding: EdgeInsets.all(8.0),
+              //     child:
+              Divider(
+                thickness: 1,
+                color: Colors.red,
+              ),
               Expanded(
                   flex: 5,
                   child: Container(
                       alignment: Alignment(0.0, 0.0), child: orderList())),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Divider(
-                    thickness: 1,
-                    color: Colors.red,
-                  )),
+              Divider(
+                thickness: 1,
+                color: Colors.red,
+              ),
               Expanded(
                   flex: 2,
                   child: Row(
                     children: [
                       Expanded(
                           flex: 5,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(child: Text('현금')))),
+                          child: InkWell(
+                              onTap: () => showMessageOrSave(true),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.cash))))),
                       Expanded(
                           flex: 5,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(child: Text('카드')))),
+                          child: InkWell(
+                              onTap: () => showMessageOrSave(false),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.card))))),
                     ],
                   )),
             ],
           )),
+      VerticalDivider(
+        thickness: 1,
+        color: Colors.red,
+      ),
       Expanded(
         flex: 7,
         child: Container(
           alignment: Alignment(0.0, 0.0),
-          child: RaisedButton(
-              onPressed: () =>
-                  addContent(new Content.three('coffee', 1000, 1))),
+          child: StreamBuilder(
+              stream: _bloc.getUser(widget._phone),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  _user = User.fromJson(snapshot.data.data());
+                  if (_user.menus.isEmpty)
+                    return Center(
+                      child: Text(StringConstant.noMenu),
+                    );
+                  else {
+                    // 카테고리별로 정렬
+                    final Map<String, int> cOrder = {};
+                    for (final item in _user.categories)
+                      cOrder[item.name] = item.order;
+                    Comparator<Menu> orderComparator = (a, b) =>
+                        cOrder[a.category].compareTo(cOrder[b.category]);
+                    _user.menus.sort(orderComparator);
+
+                    return GridView.extent(
+                      scrollDirection: Axis.vertical,
+                      maxCrossAxisExtent: 300.0, //필수값
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      children: [
+                        for (final item in _user.menus)
+                          Container(
+                              key: ValueKey(item),
+                              child: InkWell(
+                                  onTap: () => addContent(item),
+                                  child: GridMenu(item, false)))
+                      ],
+                    );
+                  }
+                } else
+                  return CircularProgressIndicator();
+              }),
         ),
       ),
     ]);
   }
 
-  void addContent(Content c) {
-    int index = _bloc.orders.indexWhere((element) => element.name == c.name);
+  void addContent(Menu m) {
+    int index = _bloc.orders.indexWhere((element) => element.name == m.name);
     if (index == -1)
-      _bloc.orders.add(c);
+      _bloc.orders.add(new Content.three(m.name, m.price, 1));
     else
       _bloc.orders[index].up();
 
@@ -170,6 +249,12 @@ class _CarState extends State<CalScreen> {
 
   void deleteContent(int index) {
     if (!_bloc.orders[index].down()) _bloc.orders.removeAt(index);
+
+    _bloc.changeOrder;
+  }
+
+  void clearContent() {
+    _bloc.orders.clear();
 
     _bloc.changeOrder;
   }
@@ -185,7 +270,7 @@ class _CarState extends State<CalScreen> {
             return Scrollbar(
                 child: ListView.builder(
               padding: EdgeInsets.all(10.0),
-              itemBuilder: (context, index) => GestureDetector(
+              itemBuilder: (context, index) => InkWell(
                   onTap: () => deleteContent(index),
                   child: TileItem(snapshot.data[index])),
               itemCount: snapshot.data.length,
@@ -196,27 +281,16 @@ class _CarState extends State<CalScreen> {
     );
   }
 
-  // ListView buildList(List<Goal> goalsList) {
-  //   return ListView.separated(
-  //       separatorBuilder: (BuildContext context, int index) => Divider(),
-  //       itemCount: goalsList.length,
-  //       itemBuilder: (context, index) {
-  //         final item = goalsList[index];
-  //         return Dismissible(
-  //             key: Key(item.id.toString()),
-  //             onDismissed: (direction) {
-  //               _bloc.removeGoal(item.title, widget._emailAddress);
-  //             },
-  //             background: Container(color: Colors.red),
-  //             child: ListTile(
-  //               title: Text(
-  //                 goalsList[index].title,
-  //                 style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //               subtitle: Text(goalsList[index].message),
-  //             ));
-  //       });
-  // }
+  void showMessageOrSave(bool _cash) {
+    if (_bloc.orders.length == 0)
+      Funcs().showErrorMessage(context, StringConstant.noOrder);
+    else {
+      _bloc.setReceipt(new Receipt.exceptDate(
+          widget._phone,
+          _cash ? StringConstant.cash : StringConstant.card,
+          _bloc.getTotal,
+          _bloc.orders));
+      clearContent();
+    }
+  }
 }

@@ -1,17 +1,22 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'user.g.dart';
 
-@JsonSerializable()
+// https://flutter.dev/docs/development/data-and-backend/json
+// flutter pub run build_runner watch
+@JsonSerializable(explicitToJson: true)
 class User {
   String phone;
   String bName, bItem, bArea;
   bool upgrade;
-  DateTime createdAt, updatedAt;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  DateTime createdAt = DateTime.now();
   List<Menu> menus = [];
   List<Category> categories = [];
 
   User(this.phone, this.bName, this.bItem, this.bArea, this.upgrade,
-      this.createdAt, this.updatedAt, this.menus, this.categories);
+      this.createdAt, this.menus, this.categories);
+
+  User.four(this.phone, this.bName, this.bItem, this.bArea);
 
   // List<_Menu> get menus => _menus;
   // List<_Category> get categories => _categories;
@@ -25,9 +30,13 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  static DateTime _fromJson(int int) =>
+      DateTime.fromMillisecondsSinceEpoch(int);
+  static int _toJson(DateTime time) => time.millisecondsSinceEpoch;
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Menu {
   String name, category;
   int price;
@@ -42,7 +51,7 @@ class Menu {
   Map<String, dynamic> toJson() => _$MenuToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Category {
   String name;
   int order;

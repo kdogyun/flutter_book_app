@@ -53,6 +53,8 @@ dependencies:
   # https://pub.dev/packages/json_annotation  
   intl: ^0.16.1
   # https://pub.dev/packages/intl
+  flutter_bloc: ^6.1.2
+  # https://pub.dev/packages/flutter_bloc
 
 
 dev_dependencies:

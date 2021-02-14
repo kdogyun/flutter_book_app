@@ -1,14 +1,17 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'receipt.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Receipt {
   String phone, type;
-  DateTime createdAt;
+
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  DateTime createdAt = DateTime.now();
   int total;
   List<Content> contents;
 
   Receipt(this.phone, this.type, this.createdAt, this.total, this.contents);
+  Receipt.exceptDate(this.phone, this.type, this.total, this.contents);
 
   // List<_Content> get contents => _contents;
   // String get phone => _phone;
@@ -18,9 +21,13 @@ class Receipt {
   factory Receipt.fromJson(Map<String, dynamic> json) =>
       _$ReceiptFromJson(json);
   Map<String, dynamic> toJson() => _$ReceiptToJson(this);
+
+  static DateTime _fromJson(int int) =>
+      DateTime.fromMillisecondsSinceEpoch(int);
+  static int _toJson(DateTime time) => time.millisecondsSinceEpoch;
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Content {
   String name;
   int price, count, sum;

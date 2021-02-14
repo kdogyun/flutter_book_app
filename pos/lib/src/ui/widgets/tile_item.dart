@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pos/src/models/receipt.dart';
+import 'package:pos/src/utils/funcs.dart';
 
 class TileItem extends StatelessWidget {
   final Content _content;
@@ -11,9 +11,7 @@ class TileItem extends StatelessWidget {
     return ListTile(
       title: Text(_content.name),
       subtitle: Text("${_content.count} 개"),
-      trailing: Text(NumberFormat('###,###,###,###')
-          .format(_content.sum)
-          .replaceAll(' ', '')),
+      trailing: Text(Funcs().numComma(_content.sum)),
       // trailing: Text(NumberFormat.currency(locale: 'ko_KR', decimalDigits: 3)
       //     .format(_content.sum)),
       // subtitle: Text("${_content.price} 원\n${_content.count} 개"),
