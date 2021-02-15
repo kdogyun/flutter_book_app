@@ -17,8 +17,9 @@ class DoBloc extends BlocBase {
 
   // stream
   Stream<DocumentSnapshot> getUser(String phone) => _repository.getUser(phone);
-  Stream<QuerySnapshot> getReceipt(String phone) =>
-      _repository.getReceipt(phone);
+  Stream<QuerySnapshot> getReceipt(
+          String phone, DateTime start, DateTime end) =>
+      _repository.getReceipt(phone, start, end);
 
   get order => _order.stream;
   get changeOrder => _changeOrder();

@@ -23,7 +23,8 @@ class _ExpandableReceiptState extends State<ExpandableReceipt> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _bloc.getReceipt(widget._phone),
+        stream: _bloc.getReceipt(
+            widget._phone, new DateTime.now(), new DateTime.now()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.docs.length != 0)
@@ -127,7 +128,9 @@ class _ExpandableReceiptState extends State<ExpandableReceipt> {
   }
 
   void changeType(Receipt _r) {
-    _r.type = (_r.type == '현금') ? '카드' : '현금';
+    _r.type = (_r.type == StringConstant.cash)
+        ? StringConstant.card
+        : StringConstant.cash;
     _bloc.updateReceipt(_r);
   }
 }

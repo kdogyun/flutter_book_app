@@ -62,21 +62,15 @@ class FirestoreProvider {
   }
 
 // 영수증 정보 가져오기
-  Stream<QuerySnapshot> getReceipt(String _phone) {
+  Stream<QuerySnapshot> getReceipt(
+      String _phone, DateTime start, DateTime end) {
     // '2019-03-13 16:49:42.044'
-    final startAtTimestamp = DateTime.parse(
-            new DateFormat('yyyy-MM-dd 00:00:00.000')
-                .format(new DateTime.now()))
-        .millisecondsSinceEpoch;
-    final endAtTimestamp = DateTime.parse(
-            new DateFormat('yyyy-MM-dd 23:59:59.999')
-                .format(new DateTime.now()))
-        .millisecondsSinceEpoch;
     return _firestore
         .collection("RECEIPT")
         .where("phone", isEqualTo: _phone)
-        .where('createdAt', isGreaterThanOrEqualTo: startAtTimestamp)
-        .where('createdAt', isLessThanOrEqualTo: endAtTimestamp)
+        .where('createdAt',
+            isGreaterThanOrEqualTo: start.millisecondsSinceEpoch)
+        .where('createdAt', isLessThanOrEqualTo: end.millisecondsSinceEpoch)
         .orderBy('createdAt', descending: true)
         .snapshots();
     // .startAt([startAtTimestamp]).endAt([endAtTimestamp]).snapshots();
