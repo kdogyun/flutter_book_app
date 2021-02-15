@@ -82,7 +82,8 @@ class _SettingMenutState extends State<SettingMenuScreen> {
                     children: [
                       for (final item in _user.menus)
                         Container(
-                            key: ValueKey(item), child: GridMenu(item, true))
+                            key: ValueKey(item),
+                            child: GridMenu(_user, item, true))
                     ],
                   );
                 }

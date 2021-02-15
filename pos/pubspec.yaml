@@ -55,6 +55,8 @@ dependencies:
   # https://pub.dev/packages/intl
   flutter_bloc: ^6.1.2
   # https://pub.dev/packages/flutter_bloc
+  flutter_calendar_carousel: ^1.5.3
+  # https://pub.dev/packages/flutter_calendar_carousel
 
 
 dev_dependencies:

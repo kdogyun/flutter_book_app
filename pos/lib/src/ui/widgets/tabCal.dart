@@ -221,11 +221,14 @@ class _CarState extends State<CalScreen> {
                       mainAxisSpacing: 10,
                       children: [
                         for (final item in _user.menus)
-                          Container(
-                              key: ValueKey(item),
+                          Ink(
+                              decoration: BoxDecoration(
+                                  color: cOrder[item.category] % 2 == 1
+                                      ? Colors.red[50]
+                                      : null),
                               child: InkWell(
                                   onTap: () => addContent(item),
-                                  child: GridMenu(item, false)))
+                                  child: GridMenu(_user, item, false)))
                       ],
                     );
                   }

@@ -5,7 +5,8 @@ import 'package:pos/src/utils/funcs.dart';
 class GridMenu extends StatelessWidget {
   final Menu _menu;
   final bool _show; // show Category
-  GridMenu(this._menu, this._show);
+  final User _user;
+  GridMenu(this._user, this._menu, this._show);
 
   @override
   Widget build(BuildContext context) {
