@@ -9,6 +9,7 @@ import 'package:pos/src/models/receipt.dart';
 import 'package:pos/src/models/user.dart';
 import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class StatsScreen extends StatefulWidget {
   final String _phone;
@@ -21,13 +22,15 @@ class StatsScreen extends StatefulWidget {
   }
 }
 
-class _StatsState extends State<StatsScreen> {
+class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
   DoBloc _bloc;
   DateTime _currentDate = new DateTime.now();
   // DateTime _currentDate2 = new DateTime.now();
   DateTime _currentMonth = new DateTime.now();
   // String _currentMonth = DateFormat.yMMM().format(new DateTime.now());
   // DateTime _targetDateTime = DateTime(2019, 2, 3);
+  AnimationController _animationController;
+  CalendarController _calendarController;
 
   @override
   void didChangeDependencies() {
@@ -36,8 +39,22 @@ class _StatsState extends State<StatsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _calendarController = CalendarController();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _animationController.forward();
+  }
+
+  @override
   void dispose() {
     _bloc.dispose();
+    _animationController.dispose();
+    _calendarController.dispose();
     super.dispose();
   }
 
@@ -85,128 +102,147 @@ class _StatsState extends State<StatsScreen> {
     return _buildCalendar(context, _receipts);
   }
 
-  _buildCalendar(BuildContext context, Map<int, List<Receipt>> receipts) {
-    return SingleChildScrollView(
-        child: ExpansionTile(
-            initiallyExpanded: true,
-            title: Text('달력'),
-            children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.0),
-            child: CalendarCarousel<Event>(
-              onDayPressed: (DateTime date, List<Event> events) {
-                this.setState(() => _currentDate = date);
-              },
-              weekendTextStyle: TextStyle(
-                color: Colors.red,
-              ),
-//      weekDays: null, /// for pass null when you do not want to render weekDays
-//      headerText: Container( /// Example for rendering custom header
-//        child: Text('Custom Header'),
-//      ),
-              customDayBuilder: (
-                /// you can provide your own build function to make custom day containers
-                bool isSelectable,
-                int index,
-                bool isSelectedDay,
-                bool isToday,
-                bool isPrevMonthDay,
-                TextStyle textStyle,
-                bool isNextMonthDay,
-                bool isThisMonthDay,
-                DateTime day,
-              ) {
-                /// If you return null, [CalendarCarousel] will build container for current [day] with default function.
-                /// This way you can build custom containers for specific days only, leaving rest as default.
-
-                // Example: every 15th of month, we have a flight, we can place an icon in the container like that:
-                return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        day.day.toString(),
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.w700,
-                          color: [6, 7].contains(day.weekday)
-                              ? Colors.red
-                              : Colors.black,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Text(
-                              sumDay(receipts[day.day], StringConstant.card),
-                              style: TextStyle(
-                                  // backgroundColor: Colors.blue,
-                                  color: Colors.blue),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Text(
-                              sumDay(receipts[day.day], StringConstant.cash),
-                              style: TextStyle(
-                                  // backgroundColor: Colors.red,
-                                  color: Colors.red),
-                            ),
-                          )
-                        ],
-                      )
-                    ]);
-              },
-              weekFormat: false,
-              // markedDatesMap: _markedDateMap,
-              height: 420.0,
-              selectedDateTime: _currentDate,
-              daysHaveCircularBorder: false,
-
-              /// null for not rendering any border, true for circular border, false for rectangular border
-            ),
-          )
-        ]));
+  void _onDaySelected(DateTime day, List events, List holidays) {
+    // print('CALLBACK: _onDaySelected');
+    // setState(() {
+    //   _selectedEvents = events;
+    // });
   }
 
-  // EventList<Event> _markedDateMap = new EventList<Event>(
-  //   events: {
-  //     new DateTime(2019, 2, 10): [
-  //       new Event(
-  //         date: new DateTime(2019, 2, 10),
-  //         title: 'Event 1',
-  //         icon: _eventIcon,
-  //         dot: Container(
-  //           margin: EdgeInsets.symmetric(horizontal: 1.0),
-  //           color: Colors.red,
-  //           height: 5.0,
-  //           width: 5.0,
-  //         ),
-  //       ),
-  //       new Event(
-  //         date: new DateTime(2019, 2, 10),
-  //         title: 'Event 2',
-  //         icon: _eventIcon,
-  //       ),
-  //       new Event(
-  //         date: new DateTime(2019, 2, 10),
-  //         title: 'Event 3',
-  //         icon: _eventIcon,
-  //       ),
-  //     ],
-  //   },
-  // );
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
+    // print('CALLBACK: _onVisibleDaysChanged');
+  }
 
-  static Widget _eventIcon = new Container(
-    decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(1000)),
-        border: Border.all(color: Colors.blue, width: 2.0)),
-    child: new Icon(
-      Icons.person,
-      color: Colors.amber,
-    ),
-  );
+  void _onCalendarCreated(
+      DateTime first, DateTime last, CalendarFormat format) {
+    // print('CALLBACK: _onCalendarCreated');
+  }
+
+  _buildCalendar(BuildContext context, Map<int, List<Receipt>> _receipts) {
+    return SingleChildScrollView(
+        child: Column(children: [
+      // ExpansionTile(initiallyExpanded: true, title: Text('달력'), children: [
+      TableCalendar(
+        calendarController: _calendarController,
+        locale: 'ko_KR',
+        // events: _events,
+        // holidays: _holidays,
+        initialCalendarFormat: CalendarFormat.month,
+        formatAnimation: FormatAnimation.slide,
+        startingDayOfWeek: StartingDayOfWeek.sunday,
+        availableGestures: AvailableGestures.all,
+        availableCalendarFormats: const {
+          CalendarFormat.month: '',
+          CalendarFormat.week: '',
+        },
+        calendarStyle: CalendarStyle(
+          outsideDaysVisible: false,
+          eventDayStyle: TextStyle(fontSize: 50),
+          weekdayStyle: TextStyle(fontSize: 50),
+          weekendStyle:
+              TextStyle(fontSize: 50).copyWith(color: Colors.blue[800]),
+          holidayStyle:
+              TextStyle(fontSize: 50).copyWith(color: Colors.blue[800]),
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekendStyle: TextStyle().copyWith(color: Colors.blue[600]),
+        ),
+        headerStyle: HeaderStyle(
+          // YYYY년 MM월 찍히는 부분
+          centerHeaderTitle: true,
+          formatButtonVisible: false,
+        ),
+        builders: CalendarBuilders(
+          selectedDayBuilder: (context, date, _) {
+            return FadeTransition(
+              opacity:
+                  Tween(begin: 0.0, end: 1.0).animate(_animationController),
+              child: Container(
+                margin: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.only(top: 5.0, left: 6.0, right: 6.0),
+                color: Colors.deepOrange[300],
+                width: 500,
+                height: 500,
+                child: _presentDay(date, _receipts),
+              ),
+            );
+          },
+          todayDayBuilder: (context, date, _) {
+            return Container(
+              margin: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 6.0, right: 6.0),
+              color: Colors.amber[400],
+              width: 500,
+              height: 500,
+              child: _presentDay(date, _receipts),
+            );
+          },
+          dayBuilder: (context, date, _) {
+            return Container(
+                margin: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.only(top: 5.0, left: 6.0, right: 6.0),
+                color: Colors.transparent,
+                width: 500,
+                height: 500,
+                child: _presentDay(date, _receipts));
+          },
+        ),
+        onDaySelected: (date, events, holidays) {
+          _onDaySelected(date, events, holidays);
+          _animationController.forward(from: 0.0);
+        },
+        onVisibleDaysChanged: _onVisibleDaysChanged,
+        onCalendarCreated: _onCalendarCreated,
+      ),
+      // ]),
+      Text('sdfsdfsd'),
+    ]));
+  }
+
+  _presentDay(DateTime date, Map<int, List<Receipt>> _receipts) {
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text(
+        date.day.toString(),
+        style: TextStyle(
+          fontSize: 24.0,
+          fontWeight: FontWeight.w700,
+          color: [6, 7].contains(date.weekday) ? Colors.red : Colors.black,
+        ),
+      ),
+      Column(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              sumDay(_receipts[date.day], StringConstant.card),
+              style: TextStyle(
+                  // backgroundColor: Colors.blue,
+                  color: Colors.blue),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              sumDay(_receipts[date.day], StringConstant.cash),
+              style: TextStyle(
+                  // backgroundColor: Colors.red,
+                  color: Colors.red),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              '',
+              style: TextStyle(
+                  // backgroundColor: Colors.red,
+                  color: Colors.red),
+            ),
+          )
+        ],
+      )
+    ]);
+  }
 
   String sumDay(List<Receipt> _r, String type) {
     int _temp = 0;
