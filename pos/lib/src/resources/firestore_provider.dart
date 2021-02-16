@@ -65,12 +65,17 @@ class FirestoreProvider {
   Stream<QuerySnapshot> getReceipt(
       String _phone, DateTime start, DateTime end) {
     // '2019-03-13 16:49:42.044'
+    final startAt =
+        DateTime.parse(new DateFormat('yyyy-MM-dd 00:00:00.000').format(start))
+            .millisecondsSinceEpoch;
+    final endAt =
+        DateTime.parse(new DateFormat('yyyy-MM-dd 23:59:59.999').format(end))
+            .millisecondsSinceEpoch;
     return _firestore
         .collection("RECEIPT")
         .where("phone", isEqualTo: _phone)
-        .where('createdAt',
-            isGreaterThanOrEqualTo: start.millisecondsSinceEpoch)
-        .where('createdAt', isLessThanOrEqualTo: end.millisecondsSinceEpoch)
+        .where('createdAt', isGreaterThanOrEqualTo: startAt)
+        .where('createdAt', isLessThanOrEqualTo: endAt)
         .orderBy('createdAt', descending: true)
         .snapshots();
     // .startAt([startAtTimestamp]).endAt([endAtTimestamp]).snapshots();

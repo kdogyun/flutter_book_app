@@ -39,28 +39,4 @@ class _ReceiptState extends State<ReceiptScreen> {
       child: ExpandableReceipt(_bloc, widget._phone),
     );
   }
-
-  // ListView buildList(List<Goal> goalsList) {
-  //   return ListView.separated(
-  //       separatorBuilder: (BuildContext context, int index) => Divider(),
-  //       itemCount: goalsList.length,
-  //       itemBuilder: (context, index) {
-  //         final item = goalsList[index];
-  //         return Dismissible(
-  //             key: Key(item.id.toString()),
-  //             onDismissed: (direction) {
-  //               _bloc.removeGoal(item.title, widget._emailAddress);
-  //             },
-  //             background: Container(color: Colors.red),
-  //             child: ListTile(
-  //               title: Text(
-  //                 goalsList[index].title,
-  //                 style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //               subtitle: Text(goalsList[index].message),
-  //             ));
-  //       });
-  // }
 }
