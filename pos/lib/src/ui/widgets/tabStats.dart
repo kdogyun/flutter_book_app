@@ -1,12 +1,11 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:intl/intl.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/models/receipt.dart';
-import 'package:pos/src/models/user.dart';
 import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -31,6 +30,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
   // DateTime _targetDateTime = DateTime(2019, 2, 3);
   AnimationController _animationController;
   CalendarController _calendarController;
+  Map<int, List<Receipt>> _receipts = <int, List<Receipt>>{};
 
   @override
   void didChangeDependencies() {
@@ -78,7 +78,6 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
 
   _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int index = 0;
-    Map<int, List<Receipt>> _receipts = <int, List<Receipt>>{};
     for (int i = 1;
         i <= DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
         i++) {
@@ -99,27 +98,27 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
           break;
       }
     }
-    return _buildCalendar(context, _receipts);
+    return _buildCalendar(context);
   }
 
-  void _onDaySelected(DateTime day, List events, List holidays) {
-    // print('CALLBACK: _onDaySelected');
-    // setState(() {
-    //   _selectedEvents = events;
-    // });
+  void _onDaySelected(DateTime day) {
+    print('CALLBACK: _onDaySelected');
+    setState(() {
+      _currentDate = day;
+    });
   }
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    // print('CALLBACK: _onVisibleDaysChanged');
+    print('CALLBACK: _onVisibleDaysChanged');
   }
 
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-    // print('CALLBACK: _onCalendarCreated');
+    print('CALLBACK: _onCalendarCreated');
   }
 
-  _buildCalendar(BuildContext context, Map<int, List<Receipt>> _receipts) {
+  _buildCalendar(BuildContext context) {
     return SingleChildScrollView(
         child: Column(children: [
       // ExpansionTile(initiallyExpanded: true, title: Text('달력'), children: [
@@ -164,7 +163,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                 color: Colors.deepOrange[300],
                 width: 500,
                 height: 500,
-                child: _presentDay(date, _receipts),
+                child: _presentDay(date),
               ),
             );
           },
@@ -175,7 +174,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               color: Colors.amber[400],
               width: 500,
               height: 500,
-              child: _presentDay(date, _receipts),
+              child: _presentDay(date),
             );
           },
           dayBuilder: (context, date, _) {
@@ -185,22 +184,22 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                 color: Colors.transparent,
                 width: 500,
                 height: 500,
-                child: _presentDay(date, _receipts));
+                child: _presentDay(date));
           },
         ),
         onDaySelected: (date, events, holidays) {
-          _onDaySelected(date, events, holidays);
+          _onDaySelected(date);
           _animationController.forward(from: 0.0);
         },
         onVisibleDaysChanged: _onVisibleDaysChanged,
         onCalendarCreated: _onCalendarCreated,
       ),
       // ]),
-      Text('sdfsdfsd'),
+      BarChart(_chartWidget()),
     ]));
   }
 
-  _presentDay(DateTime date, Map<int, List<Receipt>> _receipts) {
+  _presentDay(DateTime date) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text(
         date.day.toString(),
@@ -251,5 +250,95 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
       if (element.type == type) _temp += element.total;
     });
     return Funcs().numComma(_temp);
+  }
+
+  _chartWidget() {
+    List<Receipt> _r = _receipts[_currentDate.day];
+    Map<String, int> _map = <String, int>{};
+    _r.forEach((element) {
+      element.contents.forEach((c) {
+        int _temp = _map[c.name] ?? 0;
+        _map[c.name] = _temp + c.count;
+      });
+    });
+    var sortedKeys = _map.keys.toList(growable: false)
+      ..sort((k1, k2) =>
+          _map[k2].compareTo(_map[k1])); // 오름차순, 내림차순은 여기서 k1, k2 순서만 바꾸면 됨
+    LinkedHashMap _sMap = new LinkedHashMap.fromIterable(sortedKeys,
+        key: (k) => k, value: (k) => _map[k]);
+    List<MenuData> _menuData = <MenuData>[];
+    _sMap.forEach((k, v) => _menuData.add(MenuData(k, v)));
+    print(_map);
+    _r = null;
+    _map = null;
+    _sMap = null;
+    return BarChartData(
+      alignment: BarChartAlignment.spaceAround,
+      // maxY: 20,
+      // barTouchData: BarTouchData(
+      //   enabled: false,
+      //   touchTooltipData: BarTouchTooltipData(
+      //     tooltipBgColor: Colors.transparent,
+      //     tooltipPadding: const EdgeInsets.all(0),
+      //     tooltipBottomMargin: 8,
+      //     getTooltipItem: (
+      //       BarChartGroupData group,
+      //       int groupIndex,
+      //       BarChartRodData rod,
+      //       int rodIndex,
+      //     ) {
+      //       return BarTooltipItem(
+      //         rod.y.round().toString(),
+      //         TextStyle(
+      //           color: Colors.white,
+      //           fontWeight: FontWeight.bold,
+      //         ),
+      //       );
+      //     },
+      //   ),
+      // ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: SideTitles(
+          showTitles: true,
+          getTextStyles: (value) => const TextStyle(
+              color: Color(0xff7589a2),
+              fontWeight: FontWeight.bold,
+              fontSize: 14),
+          margin: 20,
+          getTitles: (double value) {
+            return _menuData[value.toInt()].name;
+          },
+        ),
+        leftTitles: SideTitles(showTitles: false),
+      ),
+      borderData: FlBorderData(
+        show: false,
+      ),
+      barGroups: [
+        for (final index in Iterable<int>.generate(_menuData.length).toList())
+          BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                  y: _menuData[index].count.toDouble(),
+                  colors: [Colors.lightBlueAccent, Colors.greenAccent])
+            ],
+            showingTooltipIndicators: [0],
+          )
+      ],
+    );
+  }
+}
+
+class MenuData {
+  String name;
+  int count;
+
+  MenuData(this.name, this.count);
+
+  @override
+  String toString() {
+    return '{ ${this.name}, ${this.count} }';
   }
 }

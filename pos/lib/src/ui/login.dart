@@ -27,10 +27,10 @@ class SignInFormState extends State<SignInForm> {
   _loadPhone() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      // _phone = (prefs.getString('phone') ?? '01012341234');
-      // _name = (prefs.getString('name') ?? 'plan');
-      _phone = (prefs.getString('phone') ?? null);
-      _name = (prefs.getString('name') ?? null);
+      _phone = (prefs.getString('phone') ?? '01012341234');
+      _name = (prefs.getString('name') ?? 'plan');
+      // _phone = (prefs.getString('phone') ?? null);
+      // _name = (prefs.getString('name') ?? null);
     });
   }
 

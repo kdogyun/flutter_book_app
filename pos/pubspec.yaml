@@ -59,6 +59,8 @@ dependencies:
   # https://pub.dev/packages/flutter_calendar_carousel
   table_calendar: ^2.3.3
   # https://pub.dev/packages/table_calendar
+  fl_chart: ^0.12.3
+  # https://pub.dev/packages/fl_chart
 
 
 
