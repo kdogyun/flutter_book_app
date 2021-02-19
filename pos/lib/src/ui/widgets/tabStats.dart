@@ -31,6 +31,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
   AnimationController _animationController;
   CalendarController _calendarController;
   Map<int, List<Receipt>> _receipts = <int, List<Receipt>>{};
+  List<MenuData> _menuData = <MenuData>[];
 
   @override
   void didChangeDependencies() {
@@ -78,9 +79,9 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
 
   _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int index = 0;
-    for (int i = 1;
-        i <= DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
-        i++) {
+    for (int i = DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
+        i >= 1;
+        i--) {
       _receipts[i] = <Receipt>[];
       int start =
           DateTime(_currentMonth.year, _currentMonth.month, i, 0, 0, 0, 000)
@@ -110,12 +111,13 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
+    print(_receipts.toString());
+    // print('CALLBACK: _onVisibleDaysChanged');
   }
 
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
+    // print('CALLBACK: _onCalendarCreated');
   }
 
   _buildCalendar(BuildContext context) {
@@ -195,7 +197,8 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
         onCalendarCreated: _onCalendarCreated,
       ),
       // ]),
-      BarChart(_chartWidget()),
+      _chartWidget(),
+      _rankWidget(),
     ]));
   }
 
@@ -266,68 +269,109 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
           _map[k2].compareTo(_map[k1])); // 오름차순, 내림차순은 여기서 k1, k2 순서만 바꾸면 됨
     LinkedHashMap _sMap = new LinkedHashMap.fromIterable(sortedKeys,
         key: (k) => k, value: (k) => _map[k]);
-    List<MenuData> _menuData = <MenuData>[];
+    _menuData = <MenuData>[];
     _sMap.forEach((k, v) => _menuData.add(MenuData(k, v)));
-    print(_map);
     _r = null;
     _map = null;
     _sMap = null;
-    return BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      // maxY: 20,
-      // barTouchData: BarTouchData(
-      //   enabled: false,
-      //   touchTooltipData: BarTouchTooltipData(
-      //     tooltipBgColor: Colors.transparent,
-      //     tooltipPadding: const EdgeInsets.all(0),
-      //     tooltipBottomMargin: 8,
-      //     getTooltipItem: (
-      //       BarChartGroupData group,
-      //       int groupIndex,
-      //       BarChartRodData rod,
-      //       int rodIndex,
-      //     ) {
-      //       return BarTooltipItem(
-      //         rod.y.round().toString(),
-      //         TextStyle(
-      //           color: Colors.white,
-      //           fontWeight: FontWeight.bold,
-      //         ),
-      //       );
-      //     },
-      //   ),
-      // ),
-      titlesData: FlTitlesData(
-        show: true,
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (value) => const TextStyle(
-              color: Color(0xff7589a2),
-              fontWeight: FontWeight.bold,
-              fontSize: 14),
-          margin: 20,
-          getTitles: (double value) {
-            return _menuData[value.toInt()].name;
-          },
-        ),
-        leftTitles: SideTitles(showTitles: false),
-      ),
-      borderData: FlBorderData(
-        show: false,
-      ),
-      barGroups: [
-        for (final index in Iterable<int>.generate(_menuData.length).toList())
-          BarChartGroupData(
-            x: index,
-            barRods: [
-              BarChartRodData(
-                  y: _menuData[index].count.toDouble(),
-                  colors: [Colors.lightBlueAccent, Colors.greenAccent])
+    return _menuData.length != 0
+        ? BarChart(BarChartData(
+            alignment: BarChartAlignment.spaceAround,
+            // maxY: 20,
+            // barTouchData: BarTouchData(
+            //   enabled: false,
+            //   touchTooltipData: BarTouchTooltipData(
+            //     tooltipBgColor: Colors.transparent,
+            //     tooltipPadding: const EdgeInsets.all(0),
+            //     tooltipBottomMargin: 8,
+            //     getTooltipItem: (
+            //       BarChartGroupData group,
+            //       int groupIndex,
+            //       BarChartRodData rod,
+            //       int rodIndex,
+            //     ) {
+            //       return BarTooltipItem(
+            //         rod.y.round().toString(),
+            //         TextStyle(
+            //           color: Colors.white,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: SideTitles(
+                showTitles: true,
+                getTextStyles: (value) => const TextStyle(
+                    color: Color(0xff7589a2),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+                margin: 20,
+                getTitles: (double value) {
+                  return _menuData[value.toInt()].name;
+                },
+              ),
+              leftTitles: SideTitles(showTitles: false),
+            ),
+            borderData: FlBorderData(
+              show: false,
+            ),
+            barGroups: [
+              for (final index
+                  in Iterable<int>.generate(_menuData.length).toList())
+                BarChartGroupData(
+                  x: index,
+                  barRods: [
+                    BarChartRodData(
+                        y: _menuData[index].count.toDouble(),
+                        colors: [Colors.lightBlueAccent, Colors.greenAccent])
+                  ],
+                  showingTooltipIndicators: [0],
+                )
             ],
-            showingTooltipIndicators: [0],
+          ))
+        : Container();
+  }
+
+  _rankWidget() {
+    int _sum = 0;
+    _menuData.forEach((element) {
+      _sum += element.count;
+    });
+    return _menuData.length != 0
+        ? Row(
+            children: [
+              Expanded(
+                flex: 5,
+                child: Column(
+                  children: [Text('판매왕')] +
+                      [
+                        for (final index in Iterable<int>.generate(
+                                _menuData.length >= 3 ? 3 : _menuData.length)
+                            .toList())
+                          Text(
+                              '${index + 1}위. ${_menuData[index].name} ${_menuData[index].count}개(${(_menuData[index].count / _sum * 100).toStringAsFixed(2)}%)')
+                      ],
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  children: [Text('거지왕')] +
+                      [
+                        for (final index in Iterable<int>.generate(
+                                _menuData.length >= 3 ? 3 : _menuData.length)
+                            .toList())
+                          Text(
+                              '${index + 1}위. ${_menuData[_menuData.length - index - 1].name} ${_menuData[_menuData.length - index - 1].count}개(${(_menuData[_menuData.length - index - 1].count / _sum * 100).toStringAsFixed(2)}%)')
+                      ],
+                ),
+              ),
+            ],
           )
-      ],
-    );
+        : Container();
   }
 }
 
