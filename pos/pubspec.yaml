@@ -61,6 +61,8 @@ dependencies:
   # https://pub.dev/packages/table_calendar
   fl_chart: ^0.12.3
   # https://pub.dev/packages/fl_chart
+  scrollable_positioned_list: ^0.1.9
+  # https://pub.dev/packages/scrollable_positioned_list
 
 
 

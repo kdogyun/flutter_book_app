@@ -37,33 +37,6 @@ class _SettingCategorytState extends State<SettingCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //     body: ReorderableListView(
-    //   padding: EdgeInsets.symmetric(horizontal: 40),
-    //   // onReorder: reorderData,
-    //   onReorder: (oldIndex, newIndex) {
-    //     setState(() {
-    //       _updateItems(oldIndex, newIndex);
-    //     });
-    //   },
-    //   children: [
-    //     for (final items in widget.item)
-    //       Card(
-    //         color: Colors.blueGrey,
-    //         key: ValueKey(items),
-    //         elevation: 2,
-    //         child: ListTile(
-    //           title: Text(items),
-    //           leading: Icon(
-    //             Icons.work,
-    //             color: Colors.black,
-    //           ),
-    //         ),
-    //       ),
-    //     // for (final item in _user.categories)
-    //     //   Container(key: ValueKey(item), child: TileCategory(item))
-    //   ],
-    // ));
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -90,11 +63,7 @@ class _SettingCategorytState extends State<SettingCategoryScreen> {
                 _user.categories.sort(orderComparator);
                 return ReorderableListView(
                   padding: EdgeInsets.symmetric(horizontal: 40),
-                  onReorder: (oldIndex, newIndex) {
-                    setState(() {
-                      _updateItems(oldIndex, newIndex);
-                    });
-                  },
+                  onReorder: _updateItems,
                   children: [
                     for (final item in _user.categories)
                       Container(key: ValueKey(item), child: TileCategory(item))
@@ -118,13 +87,15 @@ class _SettingCategorytState extends State<SettingCategoryScreen> {
   // }
 
   void _updateItems(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
 
-    final item = _user.categories.removeAt(oldIndex);
-    _user.categories.insert(newIndex, item);
-    widget._bloc.setUser(_user);
+      final item = _user.categories.removeAt(oldIndex);
+      _user.categories.insert(newIndex, item);
+      widget._bloc.setUser(_user);
+    });
   }
 
   Widget _bottomButtons(BuildContext context) {

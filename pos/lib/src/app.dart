@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pos/src/ui/login.dart';
 import 'package:pos/src/utils/strings.dart';
 import 'blocs/login_bloc_provider.dart';
+import 'ui/test_reorder.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
           elevation: 0.0,
         ),
         body: LoginBlocProvider(child: SignInForm()),
+        // body: TestReorder(),
       ),
     );
   }

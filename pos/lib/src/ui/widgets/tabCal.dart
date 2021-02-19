@@ -8,6 +8,7 @@ import 'package:pos/src/ui/widgets/dialogETC.dart';
 import 'package:pos/src/ui/widgets/tile_item.dart';
 import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'grid_menu.dart';
 
@@ -25,6 +26,7 @@ class CalScreen extends StatefulWidget {
 class _CarState extends State<CalScreen> {
   DoBloc _bloc;
   User _user;
+  ItemScrollController _scrollController = ItemScrollController();
 
   @override
   void didChangeDependencies() {
@@ -45,54 +47,6 @@ class _CarState extends State<CalScreen> {
           flex: 3,
           child: Column(
             children: [
-              Expanded(
-                  flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: InkWell(
-                              onTap: () => clearContent(),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            4.0) //         <--- border radius here
-                                        ),
-                                  ),
-                                  child: Center(child: Text('::'))))),
-                      Expanded(
-                          flex: 9,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                        4.0) //         <--- border radius here
-                                    ),
-                              ),
-                              child: Center(
-                                  child: StreamBuilder(
-                                      stream: _bloc.total,
-                                      builder: (context, element) {
-                                        if (element.hasData) {
-                                          if (element.data == 0)
-                                            return Text(StringConstant.noCash);
-                                          else
-                                            return Text(
-                                                Funcs().numComma(element.data));
-                                        } else
-                                          return Text(StringConstant.noCash);
-                                      })))),
-                    ],
-                  )),
-              Divider(
-                thickness: 1,
-                color: Colors.red,
-              ),
               Expanded(
                   flex: 1,
                   child: Row(
@@ -116,9 +70,12 @@ class _CarState extends State<CalScreen> {
                                         ),
                                   ),
                                   child: Center(
-                                      child: Text(StringConstant.etc))))),
+                                      child: Text(StringConstant.etc,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
                       Expanded(
-                          flex: 5,
+                          flex: 6,
                           child: InkWell(
                               onTap: () => showDialog(
                                   context: context,
@@ -133,7 +90,10 @@ class _CarState extends State<CalScreen> {
                                         ),
                                   ),
                                   child: Center(
-                                      child: Text(StringConstant.discount))))),
+                                      child: Text(StringConstant.discount,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
                     ],
                   )),
               // Padding(
@@ -147,6 +107,69 @@ class _CarState extends State<CalScreen> {
                   flex: 5,
                   child: Container(
                       alignment: Alignment(0.0, 0.0), child: orderList())),
+              Divider(
+                thickness: 1,
+                color: Colors.red,
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: InkWell(
+                              onTap: () => clearContent(),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text('::',
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
+                      Expanded(
+                          flex: 9,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                        4.0) //         <--- border radius here
+                                    ),
+                              ),
+                              child: Center(
+                                  child: StreamBuilder(
+                                      stream: _bloc.total,
+                                      builder: (context, element) {
+                                        if (element.hasData) {
+                                          if (element.data == 0)
+                                            return Text(StringConstant.noCash,
+                                                style: TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight:
+                                                        FontWeight.bold));
+                                          else
+                                            return Text(
+                                                Funcs().numComma(element.data),
+                                                style: TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight:
+                                                        FontWeight.bold));
+                                        } else
+                                          return Text(StringConstant.noCash,
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold));
+                                      })))),
+                    ],
+                  )),
               Divider(
                 thickness: 1,
                 color: Colors.red,
@@ -168,7 +191,10 @@ class _CarState extends State<CalScreen> {
                                         ),
                                   ),
                                   child: Center(
-                                      child: Text(StringConstant.cash))))),
+                                      child: Text(StringConstant.cash,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
                       Expanded(
                           flex: 5,
                           child: InkWell(
@@ -182,7 +208,10 @@ class _CarState extends State<CalScreen> {
                                         ),
                                   ),
                                   child: Center(
-                                      child: Text(StringConstant.card))))),
+                                      child: Text(StringConstant.card,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
                     ],
                   )),
             ],
@@ -214,15 +243,20 @@ class _CarState extends State<CalScreen> {
                         cOrder[a.category].compareTo(cOrder[b.category]);
                     _user.menus.sort(orderComparator);
 
-                    return GridView.extent(
+                    return Container(
+                        child: GridView.extent(
                       scrollDirection: Axis.vertical,
                       maxCrossAxisExtent: 300.0, //필수값
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                      // crossAxisSpacing: 10,
+                      // mainAxisSpacing: 10,
+                      childAspectRatio: 2,
                       children: [
                         for (final item in _user.menus)
                           Ink(
                               decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 1,
+                                  ),
                                   color: cOrder[item.category] % 2 == 1
                                       ? Colors.red[50]
                                       : null),
@@ -230,7 +264,7 @@ class _CarState extends State<CalScreen> {
                                   onTap: () => addContent(item),
                                   child: GridMenu(_user, item, false)))
                       ],
-                    );
+                    ));
                   }
                 } else
                   return CircularProgressIndicator();
@@ -241,13 +275,15 @@ class _CarState extends State<CalScreen> {
   }
 
   void addContent(Menu m) {
-    int index = _bloc.orders.indexWhere((element) => element.name == m.name);
-    if (index == -1)
+    int _index = _bloc.orders.indexWhere((element) => element.name == m.name);
+    if (_index == -1)
       _bloc.orders.add(new Content.three(m.name, m.price, 1));
     else
-      _bloc.orders[index].up();
+      _bloc.orders[_index].up();
 
     _bloc.changeOrder;
+    if (_index == -1) _index = _bloc.orders.length - 1;
+    _scrollController.scrollTo(index: _index, duration: Duration(seconds: 1));
   }
 
   void deleteContent(int index) {
@@ -268,11 +304,14 @@ class _CarState extends State<CalScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length == 0)
-            return Center(child: Text(StringConstant.noOrder));
+            return Center(
+                child: Text(StringConstant.noOrder,
+                    style: TextStyle(fontSize: 15)));
           else
             return Scrollbar(
-                child: ListView.builder(
+                child: ScrollablePositionedList.builder(
               padding: EdgeInsets.all(10.0),
+              itemScrollController: _scrollController,
               itemBuilder: (context, index) => InkWell(
                   onTap: () => deleteContent(index),
                   child: TileItem(snapshot.data[index])),

@@ -103,7 +103,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
   }
 
   void _onDaySelected(DateTime day) {
-    print('CALLBACK: _onDaySelected');
+    // print('CALLBACK: _onDaySelected');
     setState(() {
       _currentDate = day;
     });
@@ -111,7 +111,6 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    print(_receipts.toString());
     // print('CALLBACK: _onVisibleDaysChanged');
   }
 
@@ -197,8 +196,10 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
         onCalendarCreated: _onCalendarCreated,
       ),
       // ]),
-      _chartWidget(),
+      Container(margin: EdgeInsets.only(top: 25.0, bottom: 25.0)),
       _rankWidget(),
+      Container(margin: EdgeInsets.only(top: 40.0, bottom: 40.0)),
+      _chartWidget(),
     ]));
   }
 
@@ -217,28 +218,31 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
           Align(
             alignment: Alignment.bottomCenter,
             child: Text(
+              sumDay(_receipts[date.day], StringConstant.cash),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  // backgroundColor: Colors.blue,
+                  color: Colors.red),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
               sumDay(_receipts[date.day], StringConstant.card),
               style: TextStyle(
-                  // backgroundColor: Colors.blue,
+                  fontSize: 20.0,
+                  // backgroundColor: Colors.red,
                   color: Colors.blue),
             ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Text(
-              sumDay(_receipts[date.day], StringConstant.cash),
+              sumDay(_receipts[date.day], 'both'),
               style: TextStyle(
+                  fontSize: 20.0,
                   // backgroundColor: Colors.red,
-                  color: Colors.red),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Text(
-              '',
-              style: TextStyle(
-                  // backgroundColor: Colors.red,
-                  color: Colors.red),
+                  color: Colors.black),
             ),
           )
         ],
@@ -250,7 +254,9 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
     int _temp = 0;
     if (_r == null || _r.length == 0) return '';
     _r.forEach((element) {
-      if (element.type == type) _temp += element.total;
+      if (type == 'both')
+        _temp += element.total;
+      else if (element.type == type) _temp += element.total;
     });
     return Funcs().numComma(_temp);
   }
@@ -303,11 +309,12 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
             titlesData: FlTitlesData(
               show: true,
               bottomTitles: SideTitles(
+                rotateAngle: 45,
                 showTitles: true,
                 getTextStyles: (value) => const TextStyle(
                     color: Color(0xff7589a2),
                     fontWeight: FontWeight.bold,
-                    fontSize: 14),
+                    fontSize: 25),
                 margin: 20,
                 getTitles: (double value) {
                   return _menuData[value.toInt()].name;
@@ -346,26 +353,42 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               Expanded(
                 flex: 5,
                 child: Column(
-                  children: [Text('판매왕')] +
+                  children: [
+                        Text('<판매왕>',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold)),
+                        Container(
+                            margin: EdgeInsets.only(top: 7.0, bottom: 7.0))
+                      ] +
                       [
                         for (final index in Iterable<int>.generate(
                                 _menuData.length >= 3 ? 3 : _menuData.length)
                             .toList())
                           Text(
-                              '${index + 1}위. ${_menuData[index].name} ${_menuData[index].count}개(${(_menuData[index].count / _sum * 100).toStringAsFixed(2)}%)')
+                              '${index + 1}위.\t${_menuData[index].name}\t(${(_menuData[index].count / _sum * 100).toStringAsFixed(2)}%, ${_menuData[index].count}개)',
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold))
                       ],
                 ),
               ),
               Expanded(
                 flex: 5,
                 child: Column(
-                  children: [Text('거지왕')] +
+                  children: [
+                        Text('<거지왕>',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold)),
+                        Container(
+                            margin: EdgeInsets.only(top: 7.0, bottom: 7.0))
+                      ] +
                       [
                         for (final index in Iterable<int>.generate(
                                 _menuData.length >= 3 ? 3 : _menuData.length)
                             .toList())
                           Text(
-                              '${index + 1}위. ${_menuData[_menuData.length - index - 1].name} ${_menuData[_menuData.length - index - 1].count}개(${(_menuData[_menuData.length - index - 1].count / _sum * 100).toStringAsFixed(2)}%)')
+                              '${index + 1}위.\t${_menuData[_menuData.length - index - 1].name}\t(${(_menuData[_menuData.length - index - 1].count / _sum * 100).toStringAsFixed(2)}%, ${_menuData[_menuData.length - index - 1].count}개)',
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold))
                       ],
                 ),
               ),

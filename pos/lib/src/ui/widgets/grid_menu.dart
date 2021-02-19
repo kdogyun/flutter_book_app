@@ -12,18 +12,21 @@ class GridMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return _show
         ? ListTile(
-            title: Text(_menu.name),
+            title: Text(_menu.name, style: TextStyle(fontSize: 30)),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_menu.category),
+              Text(_menu.category, style: TextStyle(fontSize: 25)),
             ]),
-            trailing: Text(Funcs().numComma(_menu.price)),
+            trailing: Text(Funcs().numComma(_menu.price),
+                style: TextStyle(fontSize: 30)),
           )
         : ListTile(
-            title: Text(_menu.name),
+            title: Text(_menu.name,
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(Funcs().numComma(_menu.price)),
+              Text(Funcs().numComma(_menu.price),
+                  style: TextStyle(fontSize: 22)),
             ]));
   }
 }
