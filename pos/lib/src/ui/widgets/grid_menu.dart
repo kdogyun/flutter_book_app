@@ -20,13 +20,34 @@ class GridMenu extends StatelessWidget {
             trailing: Text(Funcs().numComma(_menu.price),
                 style: TextStyle(fontSize: 30)),
           )
-        : ListTile(
-            title: Text(_menu.name,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-            subtitle:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(Funcs().numComma(_menu.price),
-                  style: TextStyle(fontSize: 22)),
-            ]));
+        // : ListTile(
+        //     title: Text(_menu.name,
+        //         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+        //     subtitle:
+        //         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        //       Text(Funcs().numComma(_menu.price),
+        //           style: TextStyle(fontSize: 22)),
+        //     ]));
+        : Container(
+            margin: EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(_menu.name,
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                ),
+                Container(
+                  alignment: Alignment.bottomRight,
+                  child: Text(Funcs().numComma(_menu.price),
+                      style: TextStyle(
+                          fontSize: 22,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.grey[600])),
+                ),
+              ],
+            ));
   }
 }

@@ -48,71 +48,7 @@ class _CarState extends State<CalScreen> {
           child: Column(
             children: [
               Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 5,
-                          child: InkWell(
-                              onTap: () => showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      DialogETC(_bloc, true)),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            4.0) //         <--- border radius here
-                                        ),
-                                  ),
-                                  child: Center(
-                                      child: Text(StringConstant.etc,
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.bold)))))),
-                      Expanded(
-                          flex: 6,
-                          child: InkWell(
-                              onTap: () => showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      DialogETC(_bloc, false)),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            4.0) //         <--- border radius here
-                                        ),
-                                  ),
-                                  child: Center(
-                                      child: Text(StringConstant.discount,
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.bold)))))),
-                    ],
-                  )),
-              // Padding(
-              //     padding: EdgeInsets.all(8.0),
-              //     child:
-              Divider(
-                thickness: 1,
-                color: Colors.red,
-              ),
-              Expanded(
-                  flex: 5,
-                  child: Container(
-                      alignment: Alignment(0.0, 0.0), child: orderList())),
-              Divider(
-                thickness: 1,
-                color: Colors.red,
-              ),
-              Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -170,10 +106,7 @@ class _CarState extends State<CalScreen> {
                                       })))),
                     ],
                   )),
-              Divider(
-                thickness: 1,
-                color: Colors.red,
-              ),
+
               Expanded(
                   flex: 2,
                   child: Row(
@@ -214,12 +147,80 @@ class _CarState extends State<CalScreen> {
                                               fontWeight: FontWeight.bold)))))),
                     ],
                   )),
+              // Padding(
+              //     padding: EdgeInsets.all(8.0),
+              //     child:
+              // Divider(
+              //   thickness: 1,
+              //   color: Colors.red,
+              // ),
+              Expanded(
+                  flex: 7,
+                  child: Container(
+                      alignment: Alignment(0.0, 0.0), child: orderList())),
+              // Divider(
+              //   thickness: 1,
+              //   color: Colors.red,
+              // ),
+              Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 5,
+                          child: InkWell(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      DialogETC(_bloc, true)),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.etc,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
+                      Expanded(
+                          flex: 6,
+                          child: InkWell(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      DialogETC(_bloc, false)),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            4.0) //         <--- border radius here
+                                        ),
+                                  ),
+                                  child: Center(
+                                      child: Text(StringConstant.discount,
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)))))),
+                    ],
+                  )),
+              // Divider(
+              //   thickness: 1,
+              //   color: Colors.red,
+              // ),
             ],
           )),
-      VerticalDivider(
-        thickness: 1,
-        color: Colors.red,
-      ),
+      // VerticalDivider(
+      //   thickness: 1,
+      //   color: Colors.red,
+      // ),
       Expanded(
         flex: 7,
         child: Container(
@@ -249,7 +250,7 @@ class _CarState extends State<CalScreen> {
                       maxCrossAxisExtent: 300.0, //필수값
                       // crossAxisSpacing: 10,
                       // mainAxisSpacing: 10,
-                      childAspectRatio: 2,
+                      childAspectRatio: 3,
                       children: [
                         for (final item in _user.menus)
                           Ink(

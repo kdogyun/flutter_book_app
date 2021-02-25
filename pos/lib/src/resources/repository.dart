@@ -35,4 +35,7 @@ class Repository {
   // 영수증 정보 수정
   void updateReceipt(Receipt _receipt) =>
       _firestoreProvider.updateReceipt(_receipt);
+  // 영수증 정보 삭제
+  void deleteReceipt(Receipt _receipt) =>
+      _firestoreProvider.deleteReceipt(_receipt);
 }

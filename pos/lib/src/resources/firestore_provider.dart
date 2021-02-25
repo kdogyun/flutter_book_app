@@ -99,4 +99,12 @@ class FirestoreProvider {
         .doc('${_receipt.phone}${_receipt.createdAt.millisecondsSinceEpoch}')
         .update(_receipt.toJson());
   }
+
+// 영수증 정보 삭제하기
+  void deleteReceipt(Receipt _receipt) async {
+    return await _firestore
+        .collection("RECEIPT")
+        .doc('${_receipt.phone}${_receipt.createdAt.millisecondsSinceEpoch}')
+        .delete();
+  }
 }

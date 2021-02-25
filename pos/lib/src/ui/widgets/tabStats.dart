@@ -161,7 +161,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               child: Container(
                 margin: const EdgeInsets.all(4.0),
                 padding: const EdgeInsets.only(top: 5.0, left: 6.0, right: 6.0),
-                color: Colors.deepOrange[300],
+                color: Colors.deepOrange[50],
                 width: 500,
                 height: 500,
                 child: _presentDay(date),
@@ -172,7 +172,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
             return Container(
               margin: const EdgeInsets.all(4.0),
               padding: const EdgeInsets.only(top: 5.0, left: 6.0, right: 6.0),
-              color: Colors.amber[400],
+              color: Colors.amber[50],
               width: 500,
               height: 500,
               child: _presentDay(date),
@@ -197,9 +197,12 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
       ),
       // ]),
       Container(margin: EdgeInsets.only(top: 25.0, bottom: 25.0)),
+      _monthTotal(),
+      Container(margin: EdgeInsets.only(top: 30.0, bottom: 30.0)),
       _rankWidget(),
-      Container(margin: EdgeInsets.only(top: 40.0, bottom: 40.0)),
+      Container(margin: EdgeInsets.only(top: 50.0, bottom: 50.0)),
       _chartWidget(),
+      Container(margin: EdgeInsets.only(top: 50.0, bottom: 50.0)),
     ]));
   }
 
@@ -222,7 +225,8 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               style: TextStyle(
                   fontSize: 20.0,
                   // backgroundColor: Colors.blue,
-                  color: Colors.red),
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Align(
@@ -232,7 +236,8 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               style: TextStyle(
                   fontSize: 20.0,
                   // backgroundColor: Colors.red,
-                  color: Colors.blue),
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Align(
@@ -242,7 +247,8 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
               style: TextStyle(
                   fontSize: 20.0,
                   // backgroundColor: Colors.red,
-                  color: Colors.black),
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
             ),
           )
         ],
@@ -259,6 +265,72 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
       else if (element.type == type) _temp += element.total;
     });
     return Funcs().numComma(_temp);
+  }
+
+  List<Widget> getMonthTotal() {
+    int _card = 0, _cash = 0, _total = 0;
+    _receipts.forEach((key, value) {
+      value.forEach((element) {
+        if (element.type == StringConstant.cash)
+          _cash += element.total;
+        else
+          _card += element.total;
+        _total += element.total;
+      });
+    });
+
+    return [
+      Container(
+          margin: EdgeInsets.all(20.0),
+          child: Text(
+            '현금: ${Funcs().numComma(_cash)} ',
+            style: TextStyle(
+                fontSize: 30.0,
+                // backgroundColor: Colors.blue,
+                color: Colors.red,
+                fontWeight: FontWeight.bold),
+          )),
+      Container(
+          margin: EdgeInsets.all(20.0),
+          child: Text(
+            '카드: ${Funcs().numComma(_card)} ',
+            style: TextStyle(
+                fontSize: 30.0,
+                // backgroundColor: Colors.red,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold),
+          )),
+      Container(
+          margin: EdgeInsets.all(20.0),
+          child: Text(
+            '총합: ${Funcs().numComma(_total)}',
+            style: TextStyle(
+                fontSize: 30.0,
+                // backgroundColor: Colors.red,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+          )),
+    ];
+  }
+
+  _monthTotal() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Text(
+        //   '이번달',
+        //   style: TextStyle(
+        //       fontSize: 35.0,
+        //       // backgroundColor: Colors.red,
+        //       // color: Colors.black,
+        //       fontWeight: FontWeight.bold),
+        // ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: getMonthTotal(),
+        )
+      ],
+    );
   }
 
   _chartWidget() {
@@ -356,7 +428,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                   children: [
                         Text('<판매왕>',
                             style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold)),
+                                fontSize: 25, fontWeight: FontWeight.bold)),
                         Container(
                             margin: EdgeInsets.only(top: 7.0, bottom: 7.0))
                       ] +
@@ -367,7 +439,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                           Text(
                               '${index + 1}위.\t${_menuData[index].name}\t(${(_menuData[index].count / _sum * 100).toStringAsFixed(2)}%, ${_menuData[index].count}개)',
                               style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold))
+                                  fontSize: 20, fontWeight: FontWeight.bold))
                       ],
                 ),
               ),
@@ -375,9 +447,9 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                 flex: 5,
                 child: Column(
                   children: [
-                        Text('<거지왕>',
+                        Text('<분발하세요>',
                             style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold)),
+                                fontSize: 25, fontWeight: FontWeight.bold)),
                         Container(
                             margin: EdgeInsets.only(top: 7.0, bottom: 7.0))
                       ] +
@@ -388,7 +460,7 @@ class _StatsState extends State<StatsScreen> with TickerProviderStateMixin {
                           Text(
                               '${index + 1}위.\t${_menuData[_menuData.length - index - 1].name}\t(${(_menuData[_menuData.length - index - 1].count / _sum * 100).toStringAsFixed(2)}%, ${_menuData[_menuData.length - index - 1].count}개)',
                               style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold))
+                                  fontSize: 20, fontWeight: FontWeight.bold))
                       ],
                 ),
               ),

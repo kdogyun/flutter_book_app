@@ -63,6 +63,7 @@ class StringConstant {
 
   // 영수증 화면
   static const String changeType = '결제변경';
+  static const String deleteReceipt = '결제취소';
   static const String noReceipt = '영수증이 하나도 없습니다.';
 
   // 통계 화면

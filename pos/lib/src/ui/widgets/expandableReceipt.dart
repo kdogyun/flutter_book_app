@@ -78,22 +78,80 @@ class _ExpandableReceiptState extends State<ExpandableReceipt> {
                 children: [
                   Expanded(
                       child: ListTile(
-                    leading: Text(item.name),
-                    title: Text(getCount(item)),
-                    trailing: Text(Funcs().numComma(item.sum)),
+                    leading: Text(
+                      item.name,
+                      style: new TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    title: Text(
+                      getCount(item),
+                      style: new TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Text(
+                      Funcs().numComma(item.sum),
+                      style: new TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ))
                 ],
               )
           ] +
           [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              InkWell(
-                  onTap: () => changeType(_r),
-                  child: Container(
-                      margin: EdgeInsets.all(20.0),
-                      child: Text(StringConstant.changeType))),
+              Row(
+                children: [
+                  InkWell(
+                      onTap: () => changeType(_r),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.all(Radius.circular(
+                                    4.0) //         <--- border radius here
+                                ),
+                          ),
+                          margin: EdgeInsets.all(20.0),
+                          child: Text(
+                            StringConstant.changeType,
+                            style: new TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ))),
+                  InkWell(
+                      onTap: () => deleteReceipt(_r),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.all(Radius.circular(
+                                    4.0) //         <--- border radius here
+                                ),
+                          ),
+                          margin: EdgeInsets.all(20.0),
+                          child: Text(
+                            StringConstant.deleteReceipt,
+                            style: new TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )))
+                ],
+              ),
               Container(
-                  margin: EdgeInsets.all(20.0), child: Text(getTotal(_r))),
+                  margin: EdgeInsets.all(20.0),
+                  child: Text(
+                    getTotal(_r),
+                    style: new TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
             ])
           ],
       // children: [
@@ -108,7 +166,8 @@ class _ExpandableReceiptState extends State<ExpandableReceipt> {
   }
 
   String getDate(Receipt _r) {
-    return '${DateFormat('yyyy년 MM월 dd일 (EEEE) hh:mm').format(_r.createdAt)}';
+    var date = DateFormat('ko_KR').format(_r.createdAt);
+    return '${DateFormat('yyyy년 MM월 dd일 (EEEE) hh:mm a', 'ko_KR').format(_r.createdAt)}';
   }
 
   String getContent(Receipt _r) {
@@ -132,5 +191,9 @@ class _ExpandableReceiptState extends State<ExpandableReceipt> {
         ? StringConstant.card
         : StringConstant.cash;
     _bloc.updateReceipt(_r);
+  }
+
+  void deleteReceipt(Receipt _r) {
+    _bloc.deleteReceipt(_r);
   }
 }

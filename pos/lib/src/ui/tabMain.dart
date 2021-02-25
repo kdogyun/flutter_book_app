@@ -41,21 +41,23 @@ class TabMainState extends State<TabMain> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget._name + ' with ' + StringConstant.domain,
-          style: TextStyle(color: Color.fromRGBO(224, 15, 26, .99)),
+        // title: Text(
+        //   widget._name + ' with ' + StringConstant.domain,
+        //   style: TextStyle(color: Color.fromRGBO(224, 15, 26, .99)),
+        // ),
+        flexibleSpace: SafeArea(
+          child: TabBar(
+            controller: _tabController,
+            tabs: <Tab>[
+              Tab(text: StringConstant.tabReceipt),
+              Tab(text: StringConstant.tabCal),
+              Tab(text: StringConstant.tabStats),
+              Tab(text: StringConstant.tabSetting),
+            ],
+          ),
         ),
         backgroundColor: Colors.red[50],
         elevation: 0.0,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: <Tab>[
-            Tab(text: StringConstant.tabReceipt),
-            Tab(text: StringConstant.tabCal),
-            Tab(text: StringConstant.tabStats),
-            Tab(text: StringConstant.tabSetting),
-          ],
-        ),
       ),
       body: TabBarView(
         controller: _tabController,

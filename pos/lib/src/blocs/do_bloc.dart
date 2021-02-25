@@ -48,6 +48,10 @@ class DoBloc extends BlocBase {
     return _repository.updateReceipt(_receipt);
   }
 
+  void deleteReceipt(Receipt _receipt) {
+    return _repository.deleteReceipt(_receipt);
+  }
+
   @override
   void dispose() async {
     print('do bloc 디스포즈');
