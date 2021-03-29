@@ -60,6 +60,7 @@ class StringConstant {
   static const String nameMenu = '메뉴명';
   static const String namePrice = '가격';
   static const String preorderCategory = '카테고리가 하나도 없습니다. 카테고리를 먼저 추가해 주세요.';
+  static const String logout = '로그아웃';
 
   // 영수증 화면
   static const String changeType = '결제변경';

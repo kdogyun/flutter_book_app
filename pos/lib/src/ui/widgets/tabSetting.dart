@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pos/src/app.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
 import 'package:pos/src/ui/widgets/settingCategory.dart';
 import 'package:pos/src/ui/widgets/settingMenu.dart';
 import 'package:pos/src/utils/funcs.dart';
 import 'package:pos/src/utils/strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   final String _phone;
@@ -19,6 +21,15 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingState extends State<SettingScreen> {
   DoBloc _bloc;
+
+  // shared에 폰번호 저장
+  _savePhone() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString('phone', null);
+      prefs.setString('name', null);
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -75,6 +86,17 @@ class _SettingState extends State<SettingScreen> {
                   ),
             ),
             child: Center(child: Text(StringConstant.settingContact))),
+        InkWell(
+            onTap: () => logout(),
+            child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(4.0) //         <--- border radius here
+                      ),
+                ),
+                child: Center(child: Text(StringConstant.logout)))),
       ],
     );
   }
@@ -89,5 +111,15 @@ class _SettingState extends State<SettingScreen> {
       );
     else
       Funcs().showErrorMessage(context, StringConstant.preorderCategory);
+  }
+
+  void logout() {
+    _savePhone();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return MyApp();
+      }),
+    );
   }
 }
