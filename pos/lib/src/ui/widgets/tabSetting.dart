@@ -115,11 +115,9 @@ class _SettingState extends State<SettingScreen> {
 
   void logout() {
     _savePhone();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return MyApp();
-      }),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => MyApp()),
+        (route) => false);
   }
 }
