@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/app.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
@@ -29,6 +30,7 @@ class _SettingState extends State<SettingScreen> {
       prefs.setString('phone', null);
       prefs.setString('name', null);
     });
+    await FirebaseAuth.instance.signOut();
   }
 
   @override

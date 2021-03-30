@@ -28,43 +28,26 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   # 버전은 본인이 필요한 버전으로 이용
-  rxdart: ^0.25.0
-  # https://pub.dev/packages/rxdart
-  http: ^0.12.2
-  # https://pub.dev/packages/http
-  sqflite: ^1.3.2+2
-  # https://pub.dev/packages/sqflite
-  path_provider: ^1.6.27
-  # https://pub.dev/packages/path_provider
-  path: ^1.7.0
-  # https://pub.dev/packages/path
-  firebase_core: ^0.7.0
-  firebase_analytics: ^7.0.1
-  firebase_auth: ^0.20.0+1
-  cloud_firestore: ^0.16.0
-  # https://pub.dev/packages/cloud_firestore  
-  hive: ^1.4.4+1
-  # https://pub.dev/packages/hive
-  url_launcher: ^5.7.10
-  # https://pub.dev/packages/url_launcher
-  shared_preferences: ^0.5.12+4
-  # https://pub.dev/packages/shared_preferences
-  json_annotation: ^3.1.1
-  # https://pub.dev/packages/json_annotation  
-  intl: ^0.16.1
-  # https://pub.dev/packages/intl
-  flutter_bloc: ^6.1.2
-  # https://pub.dev/packages/flutter_bloc
-  flutter_calendar_carousel: ^1.5.3
-  # https://pub.dev/packages/flutter_calendar_carousel
+  # https://pub.dev/packages/cloud_firestore
+  firebase_core: ^1.0.2
+  firebase_auth: ^1.0.1
+  cloud_firestore: ^1.0.3
+
+  rxdart: ^0.26.0
+  http: ^0.13.1
+  sqflite: ^2.0.0+3
+  path_provider: ^2.0.1
+  path: ^1.8.0
+  hive: ^2.0.1
+  url_launcher: ^6.0.3
+  shared_preferences: ^2.0.5
+  json_annotation: ^4.0.1
+  intl: ^0.17.0
+  flutter_bloc: ^7.0.0
+  flutter_calendar_carousel: ^2.0.0
   table_calendar: ^2.3.3
-  # https://pub.dev/packages/table_calendar
-  fl_chart: ^0.12.3
-  # https://pub.dev/packages/fl_chart
-  scrollable_positioned_list: ^0.1.9
-  # https://pub.dev/packages/scrollable_positioned_list
-
-
+  fl_chart: ^0.30.0
+  scrollable_positioned_list: ^0.1.10
 
 dev_dependencies:
   flutter_test:
@@ -72,10 +55,8 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-  build_runner: ^1.11.1
-  # https://pub.dev/packages/build_runner
-  json_serializable: ^3.5.1
-  # https://pub.dev/packages/json_serializable
+  build_runner: ^1.12.2
+  json_serializable: ^4.1.0
 
 # The following section is specific to Flutter.
 flutter:

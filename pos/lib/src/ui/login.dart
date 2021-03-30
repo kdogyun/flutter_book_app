@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
@@ -32,11 +33,13 @@ class SignInFormState extends State<SignInForm> {
       _phone = (prefs.getString('phone') ?? null);
       _name = (prefs.getString('name') ?? null);
     });
+    if (_phone != null) await FirebaseAuth.instance.signInAnonymously();
   }
 
   // shared에 폰번호 저장
   _savePhone(String phone, String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await FirebaseAuth.instance.signInAnonymously();
     setState(() {
       _phone = phone;
       prefs.setString('phone', _phone);
