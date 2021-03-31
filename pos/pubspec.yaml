@@ -48,6 +48,7 @@ dependencies:
   table_calendar: ^2.3.3
   fl_chart: ^0.30.0
   scrollable_positioned_list: ^0.1.10
+  flutter_phoenix: ^1.0.0
 
 dev_dependencies:
   flutter_test:

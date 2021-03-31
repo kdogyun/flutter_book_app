@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:pos/src/app.dart';
 import 'package:pos/src/blocs/do_bloc.dart';
 import 'package:pos/src/blocs/do_bloc_provider.dart';
@@ -27,10 +28,10 @@ class _SettingState extends State<SettingScreen> {
   _savePhone() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      prefs.setString('phone', null);
-      prefs.setString('name', null);
+      prefs.remove('phone');
+      prefs.remove('name');
     });
-    await FirebaseAuth.instance.signOut();
+    // await FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -117,9 +118,10 @@ class _SettingState extends State<SettingScreen> {
 
   void logout() {
     _savePhone();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) => MyApp()),
-        (route) => false);
+    //   Navigator.pushAndRemoveUntil(
+    //       context,
+    //       MaterialPageRoute(builder: (BuildContext context) => MyApp()),
+    //       (route) => false);
+    Phoenix.rebirth(context);
   }
 }
